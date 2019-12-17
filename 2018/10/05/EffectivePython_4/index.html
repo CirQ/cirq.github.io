@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-loading-bar.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|monospace:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.3" rel="stylesheet" type="text/css" />
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico?v=6.0.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico?v=6.0.3">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="python,book reading," />
+
+
+<meta name="description" content="本文是《Effective Python 编写高质量Python代码的59个有效方法》一书的笔记的最后一篇。算是断断续续地看完这本书了，就结果来说，可能未必说得上在这一门语言上实现了什么重大认知的突破。但在这个过程中，学到了一些关于python的用法，也算是有所收获的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Effective Python》读书笔记（四）">
+<meta property="og:url" content="http:&#x2F;&#x2F;cirqqq.xyz&#x2F;2018&#x2F;10&#x2F;05&#x2F;EffectivePython_4&#x2F;index.html">
+<meta property="og:site_name" content="Cirq House">
+<meta property="og:description" content="本文是《Effective Python 编写高质量Python代码的59个有效方法》一书的笔记的最后一篇。算是断断续续地看完这本书了，就结果来说，可能未必说得上在这一门语言上实现了什么重大认知的突破。但在这个过程中，学到了一些关于python的用法，也算是有所收获的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-10-05T04:49:39.000Z">
+<meta property="article:modified_time" content="2019-12-17T14:53:59.307Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="book reading">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cirqqq.xyz/2018/10/05/EffectivePython_4/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>《Effective Python》读书笔记（四） | Cirq House</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113361344-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cirq House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">welcome baka</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />所有日志</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于本人</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cirqqq.xyz/2018/10/05/EffectivePython_4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cirq House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">《Effective Python》读书笔记（四）</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-05T12:49:39+08:00">2018-10-05</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/tech/" itemprop="url" rel="index"><span itemprop="name">tech</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/05/EffectivePython_4/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/10/05/EffectivePython_4/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是《Effective Python 编写高质量Python代码的59个有效方法》一书的笔记的最后一篇。算是断断续续地看完这本书了，就结果来说，可能未必说得上在这一门语言上实现了什么重大认知的突破。但在这个过程中，学到了一些关于python的用法，也算是有所收获的。</p>
+<a id="more"></a>
+<h3 id="0x7-Collaboration"><a href="#0x7-Collaboration" class="headerlink" title="0x7. Collaboration"></a>0x7. Collaboration</h3><h4 id="0x71-Write-docstrings-for-every-function-class-and-module"><a href="#0x71-Write-docstrings-for-every-function-class-and-module" class="headerlink" title="0x71. Write docstrings for every function, class and module"></a>0x71. Write docstrings for every function, class and module</h4><p>python的docstring可以通过<code>foo.__doc__</code>来访问，也可以通过内置的<code>help</code>函数来美观地打印。docstring分为模块、类、函数三种，分别有各自的标准，定义在<a href="https://www.python.org/dev/peps/pep-0257/" target="_blank" rel="noopener">PEP257</a>中。</p>
+<ul>
+<li>模块：介绍本模块的内容，把用户需要了解的重要的类和函数列出来</li>
+<li>类：类的行为、重要的属性，以及子类应该实现的方法</li>
+<li>函数：介绍函数的每个参数和返回值，以及可能抛出的异常等</li>
+</ul>
+<h4 id="0x72-Use-packages-to-organize-modules-and-provide-stable-APIs"><a href="#0x72-Use-packages-to-organize-modules-and-provide-stable-APIs" class="headerlink" title="0x72. Use packages to organize modules and provide stable APIs"></a>0x72. Use packages to organize modules and provide stable APIs</h4><p>包（package）是一个含有<strong>init</strong>.py文件的文件夹，也是一种含有其他模块的模块，可以认为，python中引入外部模块的语义是：</p>
+<blockquote>
+<p><code>from package import module</code><br><code>from module import attribute</code></p>
+</blockquote>
+<p><code>__all__</code>属性是用来规定语句<code>from module import *</code>的引入对象的，对于含有多个模块的包，可以在<strong>init</strong>.py中自定义<code>__all__</code>属性。</p>
+<h4 id="0x73-Define-a-root-exception-to-insulate-callers-from-APIs"><a href="#0x73-Define-a-root-exception-to-insulate-callers-from-APIs" class="headerlink" title="0x73. Define a root exception to insulate callers from APIs"></a>0x73. Define a root exception to insulate callers from APIs</h4><p>异常也是一种对象，遵从继承和多态机制，所以，可以自定义根异常，使得模块中的其他异常都继承自它，那么调用者只需要捕获根异常（不是python原生的Exception异常），就能够捕获到所有该模块的异常信息。</p>
+<h4 id="0x74-Know-how-to-break-circular-dependecies"><a href="#0x74-Know-how-to-break-circular-dependecies" class="headerlink" title="0x74. Know how to break circular dependecies"></a>0x74. Know how to break circular dependecies</h4><p>主要是关于如何打破循环引用的，给出了三种不同的解决方案，我觉得最实用的就是第二种方案<strong>“先引入、再配置、最后运行”</strong>，基本思想是尽量减小模块在引入时产生的副作用。</p>
+<h4 id="0x75-Use-virtual-environments-for-isolated-and-reproducible-dependencies"><a href="#0x75-Use-virtual-environments-for-isolated-and-reproducible-dependencies" class="headerlink" title="0x75. Use virtual environments for isolated and reproducible dependencies"></a>0x75. Use virtual environments for isolated and reproducible dependencies</h4><p>虚拟环境的意义在于，多个第三方模块对同一依赖模块可能有不同的版本要求，而全局安装的模块只能同时存在一个版本，所以需要利用pyvenv定制项目相关的运行环境。这点和nodejs的依赖管理是一样的，只不过是npm默认是安装到本地目录，与pip的全局安装正好相反。</p>
+<p>虚拟环境的目的在于依赖管理，因此需要一种机制来指定项目的依赖关系。一个有用的命令是<code>pip freeze &gt; requirements.txt</code>。为了利用原有的依赖关系，则需要<code>pip install -r /path/to/requirements.txt</code>。</p>
+<h3 id="0x8-Production"><a href="#0x8-Production" class="headerlink" title="0x8. Production"></a>0x8. Production</h3><h4 id="0x81-Consider-module-scoped-code-to-configure-deployment-environments"><a href="#0x81-Consider-module-scoped-code-to-configure-deployment-environments" class="headerlink" title="0x81. Consider module-scoped code to configure deployment environments"></a>0x81. Consider module-scoped code to configure deployment environments</h4><p>主要考虑如何区分生产环境和开发环境、以及区分宿主操作系统等，感觉都是一些best practice。有一个configparser的内置模块可以读取配置文件，对大型项目的配置较有用。</p>
+<h4 id="0x82-Use-repr-strings-for-debugging-output"><a href="#0x82-Use-repr-strings-for-debugging-output" class="headerlink" title="0x82. Use repr strings for debugging output"></a>0x82. Use repr strings for debugging output</h4><p>python对象可以有一个<code>__repr__</code>方法，以获得更友好的对象表示，更好地协助调试。理想情况下，repr应该返回能够重建该对象的字符串，即：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b = repr(a)</span><br><span class="line"><span class="keyword">assert</span> eval(b) == a</span><br></pre></td></tr></table></figure>
+<p>对于python的格式化字符串来说，控制符<code>&#39;%r&#39;</code>就能够打印对象的repr字符串。</p>
+<h4 id="0x83-Test-everything-with-unittest"><a href="#0x83-Test-everything-with-unittest" class="headerlink" title="0x83. Test everything with unittest"></a>0x83. Test everything with unittest</h4><p>关于单元测试的介绍，比较简单。</p>
+<h4 id="0x84-Consider-interactive-debugging-with-pdb"><a href="#0x84-Consider-interactive-debugging-with-pdb" class="headerlink" title="0x84. Consider interactive debugging with pdb"></a>0x84. Consider interactive debugging with pdb</h4><p>能够产生一个类似于gdb一样的交互式调试环境，具体操作是在断点前插入一行<code>import pdb; pdb.set_trace()</code>。</p>
+<h4 id="0x85-Profile-before-optimizing"><a href="#0x85-Profile-before-optimizing" class="headerlink" title="0x85. Profile before optimizing"></a>0x85. Profile before optimizing</h4><p>主要讲如何分析程序从而找到性能瓶颈，具体的操作就是性能分析(profile)。内置了两种性能分析器，更好的是使用<code>cProfile</code>模块，以降低解释器本身的性能开销的影响。</p>
+<h4 id="0x86-Use-tracemalloc-to-understand-memory-usage-and-leaks"><a href="#0x86-Use-tracemalloc-to-understand-memory-usage-and-leaks" class="headerlink" title="0x86. Use tracemalloc to understand memory usage and leaks"></a>0x86. Use tracemalloc to understand memory usage and leaks</h4><p>python内置了<code>gc</code>模块可以查看内存的使用情况。还有一种更好的方式是使用<code>tracemalloc</code>模块，它能够比较不同时候的内存变化情况，并且追踪对象是什么时候被分配的等信息。<code>tracemalloc</code>模块是在python3.4之后才引入的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/book-reading/" rel="tag"># book reading</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/06/MBE-project2/" rel="next" title="Modern Binary Exploitation - project2">
+                <i class="fa fa-chevron-left"></i> Modern Binary Exploitation - project2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/hmm/" rel="prev" title="隐马尔可夫模型（HMM）总结">
+                隐马尔可夫模型（HMM）总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/assets/blogimg/avatar.jpg"
+                alt="cirq" />
+            
+              <p class="site-author-name" itemprop="name">cirq</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/cirq" target="_blank" title="GitHub" rel="external nofollow">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:cirq999@163.com" target="_blank" title="E-Mail" rel="external nofollow">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x7-Collaboration"><span class="nav-text">0x7. Collaboration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x71-Write-docstrings-for-every-function-class-and-module"><span class="nav-text">0x71. Write docstrings for every function, class and module</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x72-Use-packages-to-organize-modules-and-provide-stable-APIs"><span class="nav-text">0x72. Use packages to organize modules and provide stable APIs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x73-Define-a-root-exception-to-insulate-callers-from-APIs"><span class="nav-text">0x73. Define a root exception to insulate callers from APIs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x74-Know-how-to-break-circular-dependecies"><span class="nav-text">0x74. Know how to break circular dependecies</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x75-Use-virtual-environments-for-isolated-and-reproducible-dependencies"><span class="nav-text">0x75. Use virtual environments for isolated and reproducible dependencies</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x8-Production"><span class="nav-text">0x8. Production</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x81-Consider-module-scoped-code-to-configure-deployment-environments"><span class="nav-text">0x81. Consider module-scoped code to configure deployment environments</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x82-Use-repr-strings-for-debugging-output"><span class="nav-text">0x82. Use repr strings for debugging output</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x83-Test-everything-with-unittest"><span class="nav-text">0x83. Test everything with unittest</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x84-Consider-interactive-debugging-with-pdb"><span class="nav-text">0x84. Consider interactive debugging with pdb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x85-Profile-before-optimizing"><span class="nav-text">0x85. Profile before optimizing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x86-Use-tracemalloc-to-understand-memory-usage-and-leaks"><span class="nav-text">0x86. Use tracemalloc to understand memory usage and leaks</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.3"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'CirQ',
+            repo: 'cirq.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'a625f0591878797163a38d70837f8f0d9459aefd',
+            
+                client_id: 'e10991954256e09683fa'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

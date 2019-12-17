@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-loading-bar.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|monospace:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.3" rel="stylesheet" type="text/css" />
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico?v=6.0.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico?v=6.0.3">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="mit600,open course," />
+
+
+<meta name="description" content="Lec.7Content: Lists and mutability, dictionaries, pseudocode; introduction to efficiencyLink: here 前半部分主要是python的列表和字典两种数据结构，涉及到许多老生常谈的引用与值的问题。一个比较有见地的说法是，字典的key实际上是对列表的index的一种推广(generalization)。 对于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6.00 Introduction to Computer Science and Programming 学习笔记（二）">
+<meta property="og:url" content="http:&#x2F;&#x2F;cirqqq.xyz&#x2F;2018&#x2F;02&#x2F;06&#x2F;MIT600_2&#x2F;index.html">
+<meta property="og:site_name" content="Cirq House">
+<meta property="og:description" content="Lec.7Content: Lists and mutability, dictionaries, pseudocode; introduction to efficiencyLink: here 前半部分主要是python的列表和字典两种数据结构，涉及到许多老生常谈的引用与值的问题。一个比较有见地的说法是，字典的key实际上是对列表的index的一种推广(generalization)。 对于">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;cirqqq.xyz&#x2F;assets&#x2F;postimg&#x2F;180206-tree.png">
+<meta property="article:published_time" content="2018-02-06T07:02:35.000Z">
+<meta property="article:modified_time" content="2019-12-17T14:53:59.309Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="mit600">
+<meta property="article:tag" content="open course">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;cirqqq.xyz&#x2F;assets&#x2F;postimg&#x2F;180206-tree.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://cirqqq.xyz/2018/02/06/MIT600_2/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>MIT6.00 Introduction to Computer Science and Programming 学习笔记（二） | Cirq House</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113361344-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cirq House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">welcome baka</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />所有日志</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于本人</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://cirqqq.xyz/2018/02/06/MIT600_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cirq House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">MIT6.00 Introduction to Computer Science and Programming 学习笔记（二）</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-06T15:02:35+08:00">2018-02-06</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/study/" itemprop="url" rel="index"><span itemprop="name">study</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/06/MIT600_2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/02/06/MIT600_2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p><strong>Lec.7</strong><br>Content: Lists and mutability, dictionaries, pseudocode; introduction to efficiency<br>Link: <a href="https://www.youtube.com/watch?v=tuRYbBvOMRo" target="_blank" rel="noopener">here</a></p>
+<p>前半部分主要是python的列表和字典两种数据结构，涉及到许多老生常谈的引用与值的问题。一个比较有见地的说法是，字典的key实际上是对列表的index的一种推广(generalization)。</p>
+<p>对于算法效率的描述，Grimson教授说了一句十分有意思的话，我想这值得每个cs的学生记下来（因为很好玩啊）：</p>
+<blockquote>
+<p>‘Typically there’s two things we want to measure, space and time. Sounds like an astrophysics course, right?’</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<p><strong>Lec.8</strong><br>Content: Complexity; log, linear, quadratic, exponential algorithms<br>Link: <a href="https://www.youtube.com/watch?v=ewd7Lf2dr5Q" target="_blank" rel="noopener">here</a></p>
+<p>一般的算法分析课的内容，只是惊讶于这种程度的知识我第一次接触到是在大一下的离散数学中，应用则是在大二上的数据结构与大三下的算法分析。我想，其实这种不需要用到太多高深数学原理但又十分重要的知识点，必然是越早接触越好的。</p>
+<p>这节中关于汉诺塔(Tower of Hanoi)的部分十分精彩，大概在20:41开始。其中，教授不忘黑了一把华盛顿的养老金政策：</p>
+<blockquote>
+<p>‘When they done this, the universe ends or they solve the financial crisis in Washington or something like that actually good happens.’</p>
+</blockquote>
+<p>然后还现场表演了如何移动四层的汉诺塔，现场气氛一度达到高潮，末了还不忘调侃一下Harvard：</p>
+<blockquote>
+<p>‘I can make money at Harvard Square doing this stuff.’</p>
+</blockquote>
+<p>看完让人不禁有一种买一套玩具来表演杂耍的冲动。</p>
+<hr>
+<p><strong>Lec.9</strong><br>Content: Binary search; bubble and selection sorts<br>Link: <a href="https://www.youtube.com/watch?v=UNHQ7CRsEtU" target="_blank" rel="noopener">here</a></p>
+<p>上一节讲到了二分查找，略过了列表需要有序这一前置条件的细化。也因此，这一节课自然地进入了关于排序算法的讲解。这里已经有了关于分摊(amortization)的思想，即，当需要在长度为n的数组中做k次查找时，最优算法的选取不是唯一的：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>linear search</th>
+<th>binary search</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time Complexcity</td>
+<td>$O(kn)$</td>
+<td>$O(nlogn+klogn)$</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>实际的选取算法时，应该综合考虑问题的规模(n)以及期望的执行问题的次数(k)。也因此，在大部分情况下，二分查找能够取得更好的效率。</p>
+<p>教授启发学生关于排序问题的时间复杂度时，让我想起了以前看过的<a href="https://www.amazon.com/Introduction-Design-Analysis-Algorithms-3rd/dp/0132316811" target="_blank" rel="noopener">算法书</a>里面关于<strong>平凡下界</strong>的描述。例如，由于排序的规模是在整个列表里面的，因而所有元素至少都要遍历一遍，也因此，排序的复杂度不可能低于O(n)。这本该是一个非常显而易见的结论，但仔细想想，自己也曾在全排列生成的问题上遭遇平凡下界的困扰。</p>
+<p>如何生成给定字符集的全排列？回想自己当时刚知道算法分析的方法，被O(n!)效率吓得不要不要的。但事实上，当不重复的字符集中有n个元素时，全排列的输出规模就是n!，也就是说，全排列的生成算法一定有一个平凡下界是$\Omega(n!)$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enum</span><span class="params">(chars, p, now, pset)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> p == len(chars):</span><br><span class="line">        pset.append(now[:])</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(p, len(chars)):</span><br><span class="line">        now[i], now[p] = now[p], now[i]</span><br><span class="line">        enum(chars, p+<span class="number">1</span>, now, pset)</span><br><span class="line">        now[i], now[p] = now[p], now[i]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">permutations</span><span class="params">(chars)</span>:</span></span><br><span class="line">    pset = []</span><br><span class="line">    enum(chars, <span class="number">0</span>, list(chars), pset)</span><br><span class="line">    <span class="keyword">return</span> pset</span><br><span class="line"></span><br><span class="line">chars = <span class="string">'cirq'</span></span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> permutations(chars):</span><br><span class="line">    <span class="keyword">print</span> p</span><br></pre></td></tr></table></figure>
+<p>考虑上述代码，如果给定字符集的长度为$n$，则时间复杂度满足如下递推关系：</p>
+<script type="math/tex; mode=display">T(n)=1+n(1+T(n-1)+1)=O(n)+nT(n-1)</script><p>易得该算法的时间复杂度是$O(n!)$。但上述算法存在一个不足是，需要计算出全排列之后才能返回，无法使用python的生成器特性实现惰性求值。而python标准库中的itertools模块提供了生成器形式的全排列函数，实现算法是先返回当前排列，再根据该排列生成字典序的下一个排列。具体代码可以查阅<a href="https://docs.python.org/3/library/itertools.html#itertools.permutations" target="_blank" rel="noopener">官方文档</a>。</p>
+<hr>
+<p><strong>Lec.10</strong><br>Content: Divide and conquer methods, merge sort; exceptions<br>Link: <a href="https://www.youtube.com/watch?v=kDhR4Zm53zc" target="_blank" rel="noopener">here</a></p>
+<p>归并排序大概是（编码上）最简单的$O(nlogn)$排序算法了，我觉得最受用的大概是这里关于归并排序的复杂度的分析过程。记得教科书中使用了Master theorem以及算法的递推式得到了最终的结果，这节课中，教授给出了一种更直观易懂（但略失严谨）的解释。</p>
+<p><img src="/assets/postimg/180206-tree.png" alt="tree"></p>
+<p>在归并排序中，每一次都需要将原有的数组分解成两个一样大小的子数组，并对子数组递归做相同的归并排序。为了合并两个长度为$n/2$的子数组，需要使用$O(n)$次比较，也就是说，在上图中的根节点，需要产生$O(n)$个基本操作。同样的道理，在第二层中，每个节点处都会产生一个$O(n/2)$的子问题，第三层中，每个节点产生$O(n/4)$的子问题。总的来说，每一层的操作总数都是$O(n)$，而一棵有$n$个节点的满二叉树高度为$logn$，因此，整个问题的复杂度就是$O(nlogn)$。</p>
+<hr>
+<p><strong>Lec.11</strong><br>Content: Testing and debugging<br>Link: <a href="https://www.youtube.com/watch?v=DkPsD58nUIE" target="_blank" rel="noopener">here</a></p>
+<p>测试（testing）和调试（debugging）从来不是同样的过程，代码写多了自然会有这个概念。这里给出了两者的概念上的区分，我想，更重要的大概是关于测试的理解。</p>
+<p>根据教授的说法，测试应该是一种对输入/输出的期望与实际结果的比较，这与调试作为一个发现错误的原因的过程是截然不同的。当工程规模变大时，为了保证代码的每次修改都能有合理的检验手段，测试就是必不可少的。测试分为单元测试（unit testing）和集成测试（integration testing），尽管后者是一步到位的，但是这显然比前者要困难许多。It’s easier to test small things than big things, and it’s easier to debug small things than big things。也就是说 ，单元测试比起集成测试，有更重要的现实意义。</p>
+<blockquote>
+<p>If there is a bug in the program, it’s there for only one reason, you put it there, i.e., you made a mistake. So we like to call them bugs, beacause it doesn’t make us feel stupid.</p>
+</blockquote>
+<hr>
+<p><strong>Lec.12</strong><br>Content: More about debugging; knapsack problem, introduction to dynamic programming<br>Link: <a href="https://www.youtube.com/watch?v=udnyuHzJsjM" target="_blank" rel="noopener">here</a></p>
+<p>背包问题分为两种，连续的背包问题使用的是贪心算法，即每次选取单价最高的物品即可，教授使用的例子也很奇妙，把金、银和葡萄干（raisin）作为选择，金银可以是粉末，所以近似将它们看做连续可分的物品。对于01背包，一件物品是不可分的，例如这时候金粉变成了金条，那么也就只剩下两种决策，不拿(0)或者拿(1)，这时候，最经典的算法就是动态规划了。虽然这是一个应用性很强的问题，但通过归约的思想，可以将它推广为一个具有一般性的优化问题。</p>
+<p>对于连续背包来说，优化问题的形式化表述为：</p>
+<script type="math/tex; mode=display">max\ \sum c_ip_i\ \ s.t.\ \sum p_i \le K</script><p>其中，$c_i$表示第$i$个物品的单价，$p_i$则是所取的重量，$K$是背包的最大容量。而01背包则是：</p>
+<script type="math/tex; mode=display">max\ \sum v_ix_i\ \ s.t.\ \sum w_ix_i \le K</script><p>其中，$v_i$是单个物品的价格，$w_i$是该物品的重量，$x_i$的取值为0或1，表示是否带上这个物品。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mit600/" rel="tag"># mit600</a>
+          
+            <a href="/tags/open-course/" rel="tag"># open course</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/31/MIT600_1/" rel="next" title="MIT6.00 Introduction to Computer Science and Programming 学习笔记（一）">
+                <i class="fa fa-chevron-left"></i> MIT6.00 Introduction to Computer Science and Programming 学习笔记（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/07/Codegate2018-rsababy/" rel="prev" title="Codegate CTF 2018 - RSAbaby">
+                Codegate CTF 2018 - RSAbaby <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/assets/blogimg/avatar.jpg"
+                alt="cirq" />
+            
+              <p class="site-author-name" itemprop="name">cirq</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/cirq" target="_blank" title="GitHub" rel="external nofollow">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:cirq999@163.com" target="_blank" title="E-Mail" rel="external nofollow">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.3"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'CirQ',
+            repo: 'cirq.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'a625f0591878797163a38d70837f8f0d9459aefd',
+            
+                client_id: 'e10991954256e09683fa'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
