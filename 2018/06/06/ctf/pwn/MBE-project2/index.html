@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://blog.cirq.me').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="The last commit in my mbe repo is Jan. 8th, after 5 months I finally crack the last challenge project2. Roughly I solve all challenges in more than one year, but I put it down to my lack of activation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Modern Binary Exploitation - project2">
+<meta property="og:url" content="http://blog.cirq.me/2018/06/06/ctf/pwn/MBE-project2/index.html">
+<meta property="og:site_name" content="CirQ House">
+<meta property="og:description" content="The last commit in my mbe repo is Jan. 8th, after 5 months I finally crack the last challenge project2. Roughly I solve all challenges in more than one year, but I put it down to my lack of activation">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-one.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-two.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-checksum.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-trap.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-fp.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-pivot.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-flag.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/mbepro2-fake.png">
+<meta property="article:published_time" content="2018-06-06T05:15:16.000Z">
+<meta property="article:modified_time" content="2020-01-04T01:24:58.864Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="modern binary exploitation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.cirq.me/assets/postimg/mbepro2-one.png">
+
+<link rel="canonical" href="http://blog.cirq.me/2018/06/06/ctf/pwn/MBE-project2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Modern Binary Exploitation - project2 | CirQ House</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-113361344-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CirQ House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">I hear the sound.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/06/06/ctf/pwn/MBE-project2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Modern Binary Exploitation - project2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-06 13:15:16" itemprop="dateCreated datePublished" datetime="2018-06-06T13:15:16+08:00">2018-06-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-04 09:24:58" itemprop="dateModified" datetime="2020-01-04T09:24:58+08:00">2020-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>The last commit in my mbe repo is Jan. 8th, after 5 months I finally crack the last challenge project2. Roughly I solve all challenges in more than one year, but I put it down to my lack of activation. However, I learn a lot from this open course and approve it to be a good source to learn pwn techniques in CTF.</p>
+<a id="more"></a>
+<hr>
+<p><strong>Key Auth One</strong><br>First auth accepts a user input string and then verifying it, in fact, the program will compare it with <code>GENERAL_HOTZ</code>, it is easily checked in gdb.<br><img src="/assets/postimg/mbepro2-one.png" alt="one"></p>
+<hr>
+<p><strong>Key Auth Two</strong><br>The second auth is AES-128-CBC encryption. User should specify the length of block and give the key with plain data. Similar to the previous step, key is <code>GENERAL_CROWELL</code> and the data should be <code>&#39;KING CROWELL&#39;</code>.<br><img src="/assets/postimg/mbepro2-two.png" alt="two"></p>
+<p>A trick here, required data is 12 bytes, but if I directly input it and terminate with a <code>&#39;\n&#39;</code>, comparison fails. Since the data is accepted by <code>fgets</code> which reads NULL byte as valid input, I append it at last.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p.recvuntil(<span class="string">'ENCRYPT:'</span>)</span><br><span class="line">p.sendline(<span class="string">'KING CROWELL\x00'</span>)</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>Key Auth Three</strong><br>User is firstly required to give the session number appeared on the banner. The auth reveals completing a challenge: given 64 bytes and a timestamp, user should input 64 bytes in hex.</p>
+<p>Naming the challenge string <code>challenge</code>, diving into the binary, there is a random buffer <code>randbuf</code>, and key <code>GENERAL_DOOM</code> used, saying <code>doom</code>. The expected user input should equal to the manipulated <code>rand_buf</code> after the following process:</p>
+<blockquote>
+<p>rand_buf ^= chllenge      // len(rand_buf) == 16<br>rand_buf[0] ^= doom[0]<br>rand_buf[5] ^= doom[1]<br>rand_buf[10] ^= doom[2]<br>rand_buf[15] ^= doom[3]</p>
+</blockquote>
+<p>With the timestamp, it is easy to generate fixed random number. (However, the given time is useless, I generate one at the start of process)</p>
+<hr>
+<p><strong>Nuke Checksum</strong><br>At step 4, user inputs a string which checksums to <code>0xdcdc59a9</code>.<br><img src="/assets/postimg/mbepro2-checksum.png" alt="checksum"></p>
+<p>The checksum algorithm is rather simple, just xor every double word. However, a trap occurs that the last entity is occupied by an <code>&quot;\x00END&quot;</code>, hence I should recover it (also by xor).<br><img src="/assets/postimg/mbepro2-trap.png" alt="trap"></p>
+<p>Crack the checksum is easy, since it is deterministic.</p>
+<hr>
+<p><strong>Nuke Program</strong><br>The nuke program has some codes correspond to different actions:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>code</th>
+<th>action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DOOM</code></td>
+<td>trigger a paramtered function pointer</td>
+</tr>
+<tr>
+<td><code>DISARM</code></td>
+<td>trigger a non-paramtered function pointer</td>
+</tr>
+<tr>
+<td><code>END</code></td>
+<td>end reading nuke program</td>
+</tr>
+<tr>
+<td><code>I</code></td>
+<td>increase a stack pointer</td>
+</tr>
+<tr>
+<td><code>O</code></td>
+<td>output the byte at stack pointer</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>wrtie the next byte to the stack top</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>rewrite nuke program</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>I have a chance to rewrite payload, so firstly I can use <code>I</code> and <code>O</code> to leak information, secondly use <code>I</code> and <code>S</code> to write exploit.</p>
+<p>Two function pointers are leakable. Target machine is 32-bits, the offsets of segments (.text, libc, etc.) are fixed though ASLR is activated, so I can calculate any addresses from a single pointer. (vmmap is useful!)<br><img src="/assets/postimg/mbepro2-fp.png" alt="fp"></p>
+<p>The function pointers can be rewrite, after referencing other solutions, I use ROP with stack pivoting, if I trigger <code>DOOM</code>, the pivot can be set by swapping stack pointer with <code>edx</code>, luckily, such gadget exists in binary:<br><img src="/assets/postimg/mbepro2-pivot.png" alt="pivot"></p>
+<p><img src="/assets/postimg/mbepro2-flag.png" alt="flag"><br>The flag is <code>th3_pr1nt_funct10n_w4s_100_l!n3s_al0ne</code>.</p>
+<p>The easter egg is, if the shell is spwan from <code>system</code> lib call, then we will fall into a fake shell, forcing us to use ROP gadgets.<br><img src="/assets/postimg/mbepro2-fake.png" alt="fake"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/modern-binary-exploitation/" rel="tag"># modern binary exploitation</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/13/leisure/ditf17/" rel="prev" title="Darling in the franxx 17集 观后随想">
+      <i class="fa fa-chevron-left"></i> Darling in the franxx 17集 观后随想
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/05/study/EffectivePython_4/" rel="next" title="《Effective Python》读书笔记（四）">
+      《Effective Python》读书笔记（四） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cirq"
+      src="/assets/blogimg/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cirq</p>
+  <div class="site-description" itemprop="description">technical/leisure blog, personal website</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/CirQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;CirQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cirq999@163.com" title="E-Mail → mailto:cirq999@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

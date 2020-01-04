@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://blog.cirq.me').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="感觉今年强网杯能够进入线下赛是相当梦幻的，原本线上赛28名，因为几队大佬不肯露脸出战，幸运地以22名的位置进入线下赛，代价是牺牲了自己的手持证件照。想想主办方也是厉害，靠着一场比赛收集到了全中国最注重个人隐私的一群人的身份证照。尽管结果基本没有悬念，但人争一张脸树争一张皮，我们还是给自己定了“维持参赛时的22名”的小目标，所幸实力加运气，最后还是超额完成目标。一个周末的时间都花在这里，毕业论文又暂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强网杯2018 线下赛 - revolver">
+<meta property="og:url" content="http://blog.cirq.me/2018/04/23/ctf/pwn/QWB2018awd-revolver/index.html">
+<meta property="og:site_name" content="CirQ House">
+<meta property="og:description" content="感觉今年强网杯能够进入线下赛是相当梦幻的，原本线上赛28名，因为几队大佬不肯露脸出战，幸运地以22名的位置进入线下赛，代价是牺牲了自己的手持证件照。想想主办方也是厉害，靠着一场比赛收集到了全中国最注重个人隐私的一群人的身份证照。尽管结果基本没有悬念，但人争一张脸树争一张皮，我们还是给自己定了“维持参赛时的22名”的小目标，所幸实力加运气，最后还是超额完成目标。一个周末的时间都花在这里，毕业论文又暂">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/180421-rank.jpg">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/180423-io.png">
+<meta property="article:published_time" content="2018-04-23T09:07:13.000Z">
+<meta property="article:modified_time" content="2020-01-04T01:24:58.868Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="pwn with crypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.cirq.me/assets/postimg/180421-rank.jpg">
+
+<link rel="canonical" href="http://blog.cirq.me/2018/04/23/ctf/pwn/QWB2018awd-revolver/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>强网杯2018 线下赛 - revolver | CirQ House</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-113361344-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CirQ House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">I hear the sound.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/04/23/ctf/pwn/QWB2018awd-revolver/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          强网杯2018 线下赛 - revolver
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-23 17:07:13" itemprop="dateCreated datePublished" datetime="2018-04-23T17:07:13+08:00">2018-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-04 09:24:58" itemprop="dateModified" datetime="2020-01-04T09:24:58+08:00">2020-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>感觉今年强网杯能够进入线下赛是相当梦幻的，原本线上赛28名，因为几队大佬不肯露脸出战，幸运地以22名的位置进入线下赛，代价是牺牲了自己的手持证件照。想想主办方也是厉害，靠着一场比赛收集到了全中国最注重个人隐私的一群人的身份证照。尽管结果基本没有悬念，但人争一张脸树争一张皮，我们还是给自己定了“维持参赛时的22名”的小目标，所幸实力加运气，最后还是超额完成目标。一个周末的时间都花在这里，毕业论文又暂时hang了，收获是见识到真正的神仙打架，也知道自己和大佬们的差距在哪里，参观了平日基本不可能以个人目的进去的军校，顺带见识了郑州（河南）的风土人情，也算是收获颇丰了。</p>
+<a id="more"></a>
+<p><img src="/assets/postimg/180421-rank.jpg" style="width:80%"></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>全场6道pwn题、1道web题，可以说确实是见证了信息安全比赛重心从web到pwn的变化，这里写的是其中一道pwn——revolver。老实说，如果比赛没给流量的话，凭自己的实力大概没那么容易做出来。所幸提供了流量包，双手接过大佬们的exp，复现一下打回去还是可以的。记得单刷大佬（最后的第二名，膜拜）在开局一两个小时就拿下了这道题的一血，实在惊艳，最后攻击的exp也基本照抄这个答案。根据<a href="https://www.anquanke.com/post/id/105387" target="_blank" rel="noopener">出题人提供的官方writeup</a>，这道题目还有多种解法，现场拿到的exp中也确实看到其他的payload，就都在这里讨论一下。</p>
+<h3 id="主程序"><a href="#主程序" class="headerlink" title="主程序"></a>主程序</h3><p>打开IDA，F5一下就蒙了，第一次逆向C++程序，被IO的原始操作秀的一脸懵逼，尽管当时做mbe也有过C++的逆向，但毕竟给了源码。不得不说真实地感受到了这门语言的博大精深，那么多的语法特性到最后都是编译成通用的函数的backend，十分震撼。</p>
+<p><img src="/assets/postimg/180423-io.png" alt="io"></p>
+<p>这次比赛很人性化地给了外网，然而外网给我的唯一用处就是查单词，感觉还是吃了英语不好的亏，程序revolver一共有三个选项：insurance、chambering、fire，四个单词有三个不认识，理解程序意图就有点吃力了。四个单词分别是：左轮手枪、打开保险、上膛、开枪。对应的操作也比较形象。前两个操作相对简单，fire下面又带出7个选项，一个一个分析。</p>
+<h4 id="insurance"><a href="#insurance" class="headerlink" title="insurance"></a>insurance</h4><p>这一步需要完成一个puzzle，但直觉不好，没看到一行的分隔符，加上逆向没经验，导致浪费了很多时间在研究puzzle到底是个什么东西。一个puzzle如下所示：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">====your revolver====</span><br><span class="line">====magazine:<span class="number">3</span> bullets</span><br><span class="line">====insurance status:lock</span><br><span class="line"><span class="number">1</span>:insurance</span><br><span class="line"><span class="number">2</span>:chambering</span><br><span class="line"><span class="number">3</span>:fire</span><br><span class="line">action:<span class="number">1</span></span><br><span class="line"><span class="number">1.</span>open insurance</span><br><span class="line"><span class="number">2.</span>lock insurance</span><br><span class="line">action:<span class="number">1</span></span><br><span class="line">opening:<span class="number">4</span>bb628a2f73a9f303bd3cb2ceabdf5df#Q+NH0Q9cZjmRg</span><br></pre></td></tr></table></figure>
+<p>puzzle的内容其实是一个md5和msg，用”#”分隔开来。之所以知道是md5，是因为摘要长度是32位hex，算是cryptor的直觉（虽然比赛中用了好久才发现）；msg的内容通过源码分析，知道是从字符集中随机生成16字节的消息，其摘要就是所给的md5，msg给出了前13字节，要求输入最后3字节。只要看出来这一点，那就不难了，直接brute force。</p>
+<h4 id="chambering"><a href="#chambering" class="headerlink" title="chambering"></a>chambering</h4><p>这一步看似没有其他操作，但实际上很多加载工作都是在这时完成的。这选项应该在最开始时选，因为开了保险就不应该装弹了嘛。执行chambering的成功条件是子弹数为0，并且ins_locked是true的。这一步之后，子弹数会加3，而在源码中，还会看到flag文件此时被加载进内存，并且通过AES256_ECB原地加密flag，大概这才是真正的chambering吧。以前写过C语言的AES128_ECB加密，所以对这段代码有一点熟悉，能够判断出来是这种加密模式。万万没想到，这道题居然是pwn和crypto的结合，甚至要一点reverse的技巧。</p>
+<h4 id="fire"><a href="#fire" class="headerlink" title="fire"></a>fire</h4><p>上两步操作执行完成后，就可以执行fire了，基本上所有的漏洞都出在这一个选项。fire下面有7个选项，这里一个个具体分析。</p>
+<ol>
+<li><p>将加密过的flag以16进制的形式输出出来，这一步没有漏洞</p>
+</li>
+<li><p>设定一个train_num，第4行处将对输入x做了一层检测，要求小于等于32，由于是强制转换为有符号数，所以这一步可以输入一个负数并通过检测。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="number">2u</span>:                                    <span class="comment">// request more train</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="keyword">operator</span>&lt;&lt;&lt;<span class="built_in">std</span>::char_traits&lt;<span class="keyword">char</span>&gt;&gt;(&amp;<span class="built_in">std</span>::<span class="built_in">cout</span>, <span class="string">"more train:"</span>);</span><br><span class="line">    <span class="built_in">std</span>::istream::<span class="keyword">operator</span>&gt;&gt;(&amp;<span class="built_in">std</span>::<span class="built_in">cin</span>, &amp;x);</span><br><span class="line">    <span class="keyword">if</span> ( (<span class="keyword">signed</span> <span class="keyword">int</span>)x &gt; <span class="number">32</span> )</span><br><span class="line">        get_out();</span><br><span class="line">    train_num = x;</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输入一串字符作为train_rule，要求字符串长度小于16，而后会输出train_num个字节的信息。这一步结合2就能够实现信息泄露，由于train_num在这里是用无符号数表示的，所以假设上一步输入了负数的话，那么这里就会被解释成一个很大的正数，把train_rule以及下面的数据都泄露出来。查看bss段的布局，可以看到下面正好是AES_key和enc_flag。可以说，这就实现一次攻击了。</p>
+</li>
+<li><p>这一步是输出RSA加密过的AES_key，使用了固定的2048位大整数N和0x10001的加密指数e，基本上不可解。</p>
+</li>
+<li><p>输出AES的一部分round key，但基本没用，因为无法逆推出原密钥。</p>
+</li>
+<li><p>在AES_key前面填充固定字节，然后用1024位的N和e=3做RSA加密，保证了无法直接开立方，这条路基本也被堵死了。但现场有队伍大力出奇迹直接factorize了，别人怎么patch都没用，连主办方都说，直接把分送给他们也无妨，只能说，这就是大佬吧。</p>
+</li>
+<li><p>可以修改train_rule的其中一个字节，根据主办方的意思应该是能够构造两次RSA的e=3的加密然后实现与上次codegate类似的攻击，但我看了半天都没看到是如何修改到密文的。。。然而现场确实有人使用了这一种攻击方式，还要再多加学习吧。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pwn-with-crypto/" rel="tag"># pwn with crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/08/study/EffectivePython_3/" rel="prev" title="《Effective Python》读书笔记（三）">
+      <i class="fa fa-chevron-left"></i> 《Effective Python》读书笔记（三）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/13/leisure/ditf17/" rel="next" title="Darling in the franxx 17集 观后随想">
+      Darling in the franxx 17集 观后随想 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主程序"><span class="nav-number">2.</span> <span class="nav-text">主程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#insurance"><span class="nav-number">2.1.</span> <span class="nav-text">insurance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#chambering"><span class="nav-number">2.2.</span> <span class="nav-text">chambering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fire"><span class="nav-number">2.3.</span> <span class="nav-text">fire</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cirq"
+      src="/assets/blogimg/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cirq</p>
+  <div class="site-description" itemprop="description">technical/leisure blog, personal website</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/CirQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;CirQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cirq999@163.com" title="E-Mail → mailto:cirq999@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

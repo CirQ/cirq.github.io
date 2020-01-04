@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://blog.cirq.me').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="前言在YouTube上第一次看到这个系列的视频纯属偶然，更准确地说，动机是必然的，具体内容却是未预期的。最初目的是为了覆盖自己主页上各种奇怪的推荐，不加选择地搜索各种技术性与理论向的视频，于是看到了这个公开课。这门课是MIT工科学生的大一课程，大部分内容属于一个计算机学生的必备知识，作为大四学生，内容十分基础。但我总有有种焦虑，认为名校的课程总归有值得学习的地方，即便是从头构建计算机的整体理论，我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6.00 Introduction to Computer Science and Programming 学习笔记（一）">
+<meta property="og:url" content="http://blog.cirq.me/2018/01/31/study/MIT600_1/index.html">
+<meta property="og:site_name" content="CirQ House">
+<meta property="og:description" content="前言在YouTube上第一次看到这个系列的视频纯属偶然，更准确地说，动机是必然的，具体内容却是未预期的。最初目的是为了覆盖自己主页上各种奇怪的推荐，不加选择地搜索各种技术性与理论向的视频，于是看到了这个公开课。这门课是MIT工科学生的大一课程，大部分内容属于一个计算机学生的必备知识，作为大四学生，内容十分基础。但我总有有种焦虑，认为名校的课程总归有值得学习的地方，即便是从头构建计算机的整体理论，我">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/180131-goodmorning.png">
+<meta property="og:image" content="http://blog.cirq.me/assets/postimg/180131-pali.png">
+<meta property="article:published_time" content="2018-01-31T10:02:27.000Z">
+<meta property="article:modified_time" content="2019-12-17T14:53:59.309Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="mit600">
+<meta property="article:tag" content="open course">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.cirq.me/assets/postimg/180131-goodmorning.png">
+
+<link rel="canonical" href="http://blog.cirq.me/2018/01/31/study/MIT600_1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>MIT6.00 Introduction to Computer Science and Programming 学习笔记（一） | CirQ House</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-113361344-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CirQ House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">I hear the sound.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/01/31/study/MIT600_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT6.00 Introduction to Computer Science and Programming 学习笔记（一）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-01-31 18:02:27" itemprop="dateCreated datePublished" datetime="2018-01-31T18:02:27+08:00">2018-01-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-17 22:53:59" itemprop="dateModified" datetime="2019-12-17T22:53:59+08:00">2019-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index">
+                    <span itemprop="name">study</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>前言</strong><br>在YouTube上第一次看到这个系列的视频纯属偶然，更准确地说，动机是必然的，具体内容却是未预期的。最初目的是为了覆盖自己主页上各种奇怪的推荐，不加选择地搜索各种技术性与理论向的视频，于是看到了这个公开课。这门课是MIT工科学生的大一课程，大部分内容属于一个计算机学生的必备知识，作为大四学生，内容十分基础。但我总有有种焦虑，认为名校的课程总归有值得学习的地方，即便是从头构建计算机的整体理论，我也应该把这个系列看完。</p>
+<p>经过一段时间的学习（快进与跳过），不免惊叹于名校教师的讲课效率。一学期的课程，覆盖了在这边学习两年的内容，又不失内容的广度和深度，大概这也是我迫不及待地要把这些内容记录下来的一大动力。趁着博客上线的机会，我也终于决定把这个系列进行整理，列出对自己有启发性的内容，也算是没白费花这么多时间把首页reflesh过了。</p>
+<p>写这篇推时，已经看到第19课，然而对之前内容的整理，依然得从头开始。要怪，只能怪自己没早点决定上线博客（笑）。尽管这个举动更多地是出于欠缺理论的焦虑，但毕竟也聊胜于无。如此，就尽快进入正题吧。</p>
+<a id="more"></a>
+<hr>
+<p><strong>Lec.1</strong><br>Content: Goals of the course; what is computation; introduction to data types, operators, and variables<br>Link: <a href="https://www.youtube.com/watch?v=k6U-i4gXkLM" target="_blank" rel="noopener">here</a></p>
+<p>授课教授给学生的第一感觉，直接决定了学生在这学期对这门的态度。作为大四的老油条，对此深有体会。想起高中时也看过MIT的基础物理公开课，被Lewin教授的课堂深深吸引了（虽然最后并没有坚持看完）。6.00显然也是这样一门课程，内容广而有一定深度，教授在专业之外又不失于刻板，一见面就表现出了毫无掩饰的美式幽默：</p>
+<blockquote>
+<p>“John was department head for ten years, felt like a century.”<br>“John’s been lecturing for thirty years roughly, I’m the young guy, I’ve only been lecturing for twenty-five years.”</p>
+</blockquote>
+<p>这是一门导论课，也是一门编程课，编程语言是python。这显然与国内那种一门导论课一门语言课一门算法课的做法不同，所有内容都通过这门简单的编程语言联系在一起：基础算法，编程语言结构，问题分析等等。虽然一味鼓吹外国的月亮比较圆灭自己威风，但至少在这里，我没办法否认这个说法，不是吗？</p>
+<p>我想，第一个值得被记下来的是declarative/imperative knowledge的概念，用所讲的例子是：</p>
+<blockquote>
+<p>Declarative: $\sqrt{x}\ is\ y\ s.t.\ y^2=x\ and\ y\ge 0$<br>Imperative: start with guess $G$, test if $G^2$ closed enough to $x$, if so, return it as $y$, otherwise, repeat with $(G+x/G)/2$ （牛顿法）</p>
+</blockquote>
+<p>显然，declarative knowledge给出了一种可以用于验证的方法，更注重的是一种形式化的表述，但imperative knowledge追求使用可计算的程序化方法解决这种问题，这就道出了computation的本质。到这里，教授还不忘黑Harvard一把……</p>
+<p>往下提到了fixed-program computer和store-program computer的区别，顺手画出了一个现代CPU的工作原理（memory存放数据和指令，通过ALU计算实现input/output，PC控制指令，等），甚至于图灵机的基本概念（纸带与基本操作，程序语言的图灵等价性）。虽然学究气较重，但也在一开始就将一台计算机刻画到最深处。</p>
+<p>余下的便是各种定义与比较，为了避免博文流于形式（像大多数csdn上的文章一样），我就只把名词列在这里吧，允许我不再多做解释：</p>
+<ul>
+<li>high level / low level language</li>
+<li>general / targetted language</li>
+<li>interpreted / compiled language</li>
+<li>syntax / static semantics / full semantics</li>
+</ul>
+<hr>
+<p><strong>Lec.2</strong><br>Content: Operators and operands; statements; branching, conditionals, and iteration<br>Link: <a href="https://www.youtube.com/watch?v=Pij6J0HsYFA" target="_blank" rel="noopener">here</a></p>
+<p>这一节主要是python的编程基础，大部分内容较简单。与前一节相同的理由，这回就连名词也略去好了。</p>
+<p>PS: 好想去现场catch candy…</p>
+<hr>
+<p><strong>Lec.3</strong><br>Content: Common code patterns: iterative programs<br>Link: <a href="https://www.youtube.com/watch?v=X6ilT3uUOBo" target="_blank" rel="noopener">here</a></p>
+<p>乍一看这个内容，以为讲的是软件过程的<a href="https://en.wikipedia.org/wiki/Iterative_and_incremental_development" target="_blank" rel="noopener">迭代式开发</a>方法，立刻被课程的内容跳跃之大震惊了。而后证明，其实只是在说一个简单的for-loop的通用形式，即“设初值-测试迭代条件-改变迭代计数器”的过程。当然，之后的内容把“迭代”这一过程泛化了许多。</p>
+<p>但不管怎么样，一开始时黑板上的Good Morning实在是太抢眼了，一眼被萌到。</p>
+<p><img src="/assets/postimg/180131-goodmorning.png" alt="morning"></p>
+<hr>
+<p><strong>Lec.4</strong><br>Content: Decomposition and abstraction through functions; introduction to recursion<br>Link: <a href="https://www.youtube.com/watch?v=SXR9CDof7qw" target="_blank" rel="noopener">here</a></p>
+<p>主要就是怎么通过函数封装特定的过程。课上所用的例子是农场问题(farmyard problem)，这也是我第一次知道鸡兔同笼问题在外文中的说法，以及这个版本中，被关在一起的是猪和鸡。。。</p>
+<p>知乎上有个问题是，<a href="https://www.zhihu.com/question/68411978" target="_blank" rel="noopener">哪段代码体现了程序的暴力美学？</a>课上给出的解答版本是枚举各种可能的数量的组合。比起各种线性方程求解的O(1)做法，我想，这才是计算机真正work的方式吧，除了暴力，还是暴力。</p>
+<p>最后一项内容是关于递归问题的。在这里，教授给出了一个很实际的递归定义：一个人怎么才算是美国公民？细节不再展开，但这种讲课的方式即便在现在看来，也是十分有趣的。</p>
+<p>一个编程问题是回文字符串的判断，通过课上的启发以及个人的改进，可以给出一个相当pythonic的solution：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isPalindrome</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span> <span class="keyword">if</span> len(s)&lt;<span class="number">2</span> <span class="keyword">else</span> (s[<span class="number">0</span>]==s[<span class="number">-1</span>] <span class="keyword">and</span> isPalindrome(s[<span class="number">1</span>:<span class="number">-1</span>]))</span><br></pre></td></tr></table></figure></p>
+<p>而另一段更惊艳的代码是通过缩进看出递归过程的执行顺序：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">unit = <span class="string">'    '</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isPalindrome</span><span class="params">(s, depth)</span>:</span></span><br><span class="line">    indent = unit * depth</span><br><span class="line">    <span class="keyword">print</span> indent, <span class="string">'func called with'</span>, s</span><br><span class="line">    <span class="keyword">if</span> len(s) &lt; <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">print</span> indent, <span class="string">'about to return True from base'</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ans = s[<span class="number">0</span>]==s[<span class="number">-1</span>] <span class="keyword">and</span> isPalindrome(s[<span class="number">1</span>:<span class="number">-1</span>], depth+<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">print</span> indent, <span class="string">'about to return True from base'</span></span><br><span class="line">        <span class="keyword">return</span> ans</span><br><span class="line"></span><br><span class="line">isPalindrome(<span class="string">'abcdedcba'</span>, <span class="number">0</span>)</span><br></pre></td></tr></table></figure></p>
+<p>效果十分酷炫：<br><img src="/assets/postimg/180131-pali.png" alt="pali"></p>
+<hr>
+<p><strong>Lec.5</strong><br>Content: Floating point numbers; successive refinement, finding roots<br>Link: <a href="https://www.youtube.com/watch?v=Pfo7r6bjSqI" target="_blank" rel="noopener">here</a></p>
+<p>John教授说：”Computer are supposed to be good for crunching numbers.” 私以为crunching一词用得十分精妙，道出了computation的本质（实际上这似乎是一种对数据处理的地道英语表达）。</p>
+<p>比较重要的知识点是浮点数的二进制表示，即IEEE754标准。基本方式就是利用科学计数法表示一个大的数（可以是小数，也可以是很大的整数），以十进制类比，一个数的科学计数法可以分为四部分：</p>
+<script type="math/tex; mode=display">0.0625\ =\ +6.25\ *\ 10^{-2}</script><p>其中：</p>
+<ul>
+<li>$+$号是符号位（sign），有两种取值，可以是正或负</li>
+<li>$6.25$是尾数（mantissa）部分，其值范围在$[1,\ base)$之间</li>
+<li>$10$是基数（base），在计算机内存中，该值是2（但不需要显式地存储）</li>
+<li>$-2$是指数（exponent）</li>
+</ul>
+<p>如果用二进制表示，0.0625也可以表示为：</p>
+<script type="math/tex; mode=display">0.0625\ =\ 1\ *\ 2^{-4}</script><p>需要注意的是，科学计数法不同于进位制的加权系数表示法：</p>
+<p>weighted: <script type="math/tex">(11.01)_2=1*2^1+1*2^0+0*2^{-1}+1*2^{-2}</script></p>
+<p>scientific: <script type="math/tex">(11.01)_2=(1.101)_2*2^1</script></p>
+<p>由此就可以讨论浮点数在内存中的表示方法，只考虑32位和64位的情况（虽然该标准制定了其他位架构下的表示方式）：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>位数</th>
+<th>名称</th>
+<th>符号位</th>
+<th>指数(exponent)</th>
+<th>尾数(mantissa/significand)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32</td>
+<td>single precision</td>
+<td>1</td>
+<td>8</td>
+<td>23</td>
+</tr>
+<tr>
+<td>64</td>
+<td>double precision</td>
+<td>1</td>
+<td>11</td>
+<td>52</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>课堂中讲到的是64位的情况，此时，由于指数有11位，可以表示的范围是$[-1022, 1023]$（因为存在特殊数字，所以没有取到-1024），因此最大可表示的数字位数是$2^{1023}=10^{308}$。52位的尾数带来了17位的十进制精度，已经足够在各种使用环境中取得较好的结果。</p>
+<p>背熟这些常数可能不会有很大的作用，但需要明白的是，当一个十进制数字无法用有限的二进制数表示时，计算机会使用近似的表示法，因此浮点运算会出现与直觉相违背的情况；同时，比较两个浮点数的相等也不能用普通的<code>==</code>了。</p>
+<hr>
+<p><strong>Lec.6</strong><br>Content: Bisection methods; Newton/Raphson; Introduction to lists<br>Link: <a href="https://www.youtube.com/watch?v=hVHqs38fPe8" target="_blank" rel="noopener">here</a></p>
+<p>作为successive refinement的一个例子，上节课使用了二分法来求一个数的平方根。本节提出了一种改进的方法是牛顿法(Newton/Raphson method)，基本思想也是successive refinement，但不同于二分法，牛顿法采用的下一步是点切线的零点，这是对原方程解的一个更好的逼近，也因此能够比二分法更快地收敛。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mit600/" rel="tag"># mit600</a>
+              <a href="/tags/open-course/" rel="tag"># open course</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/01/30/Hello-World/" rel="prev" title="Hello World!">
+      <i class="fa fa-chevron-left"></i> Hello World!
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/02/06/study/MIT600_2/" rel="next" title="MIT6.00 Introduction to Computer Science and Programming 学习笔记（二）">
+      MIT6.00 Introduction to Computer Science and Programming 学习笔记（二） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cirq"
+      src="/assets/blogimg/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cirq</p>
+  <div class="site-description" itemprop="description">technical/leisure blog, personal website</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/CirQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;CirQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cirq999@163.com" title="E-Mail → mailto:cirq999@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+</body>
+</html>

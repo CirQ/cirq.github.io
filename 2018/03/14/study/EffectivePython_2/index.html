@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://blog.cirq.me').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本文是《Effective Python 编写高质量Python代码的59个有效方法》一书的笔记的第二篇，主要涉及到的都是python的面向对象设计中的代码风格问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Effective Python》读书笔记（二）">
+<meta property="og:url" content="http://blog.cirq.me/2018/03/14/study/EffectivePython_2/index.html">
+<meta property="og:site_name" content="CirQ House">
+<meta property="og:description" content="本文是《Effective Python 编写高质量Python代码的59个有效方法》一书的笔记的第二篇，主要涉及到的都是python的面向对象设计中的代码风格问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-03-14T02:51:23.000Z">
+<meta property="article:modified_time" content="2020-01-04T01:16:34.666Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="book reading">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.cirq.me/2018/03/14/study/EffectivePython_2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>《Effective Python》读书笔记（二） | CirQ House</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-113361344-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CirQ House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">I hear the sound.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/03/14/study/EffectivePython_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Effective Python》读书笔记（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-14 10:51:23" itemprop="dateCreated datePublished" datetime="2018-03-14T10:51:23+08:00">2018-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-04 09:16:34" itemprop="dateModified" datetime="2020-01-04T09:16:34+08:00">2020-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index">
+                    <span itemprop="name">study</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文是《Effective Python 编写高质量Python代码的59个有效方法》一书的笔记的第二篇，主要涉及到的都是python的面向对象设计中的代码风格问题。</p>
+<a id="more"></a>
+<h3 id="0x3-Classes-and-Inheritance"><a href="#0x3-Classes-and-Inheritance" class="headerlink" title="0x3. Classes and Inheritance"></a>0x3. Classes and Inheritance</h3><h4 id="0x31-Prefer-helper-classes-over-bookkeeping-with-dictionaries-and-tuples"><a href="#0x31-Prefer-helper-classes-over-bookkeeping-with-dictionaries-and-tuples" class="headerlink" title="0x31. Prefer helper classes over bookkeeping with dictionaries and tuples"></a>0x31. Prefer helper classes over bookkeeping with dictionaries and tuples</h4><p>套用原书中的话：用来保存状态的数据结构一旦变得过于复杂，就应该将其拆解为类，以便提供更为明确的接口，并更好地封装数据。这样也能在接口与具体实现之间创建抽象层。</p>
+<p>用tuple的坏处在于它是不可变的，而且通过下标索引实际上并不直观，对源码的可读性产生了较大的影响。而字典则是，当引入嵌套字典时，多次的引用也会降低代码的友好程度，毕竟python最大的特点就是极强的可读性吧。一个代替的方案是<code>collections.namedtuple</code>，可以用来表示不可变的简单结构，颇像不可变的js对象，具名元组的访问方式是通过成员引用而不是字典的那种key的方式，相比来说就十分直观了。以刚刚过去的N1CTF中，计算点到直线的距离为例，单独定义点和直线的类显得过于繁琐，为了方便使用对象的属性，可以用namedtuple：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>Point = namedtuple(<span class="string">'Point'</span>, (<span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'z'</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>p1 = Point(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>p1.x</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>Line = namedtuple(<span class="string">'Line'</span>, (<span class="string">'vector'</span>, <span class="string">'p'</span>, <span class="string">'q'</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l = Line((<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>), p1, p1)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>l.vector</span><br><span class="line">(<span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>具名元组的缺点在于使用不够灵活，不能提供默认值，只适合在简单类中使用。再复杂的结构，就得考虑用类来作封装了。</p>
+<h4 id="0x32-Accept-functions-for-simple-interfaces-instead-of-classes"><a href="#0x32-Accept-functions-for-simple-interfaces-instead-of-classes" class="headerlink" title="0x32. Accept functions for simple interfaces instead of classes"></a>0x32. Accept functions for simple interfaces instead of classes</h4><p>作为一门支持函数式编程（functional programming）的语言，python提供了许多高阶函数，这些高阶函数都可以接受函数作为参数，表示某种hook的行为，这里也启发我们用同样的方式实现和使用自己的接口函数。</p>
+<p>如果要保存状态，建议是封装成类而不是闭包。但若传入的函数参数是类的成员，那么代码的意图就不太直观。更好的方法是实现类的<code>__call__</code>方法，这样类的对象就可以像函数一样被调用。</p>
+<p><code>collections.defaultdict</code>类通过一个hook函数实现对字典默认值的处理，为了记录默认处理的次数，可以用类属性来记录这个数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line">current = &#123;<span class="string">'A'</span>:<span class="number">1</span>, <span class="string">'B'</span>:<span class="number">2</span>&#125;</span><br><span class="line">increments = &#123;<span class="string">'A'</span>:<span class="number">2</span>, <span class="string">'C'</span>:<span class="number">4</span>, <span class="string">'D'</span>:<span class="number">6</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># class CountMissing(object):</span></span><br><span class="line"><span class="comment">#     def __init__(self):</span></span><br><span class="line"><span class="comment">#         self.added = 0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#     def missing(self):</span></span><br><span class="line"><span class="comment">#         self.added += 1</span></span><br><span class="line"><span class="comment">#         return 0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># counter = CountMissing()</span></span><br><span class="line"><span class="comment"># result = defaultdict(counter.missing, current)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BetterCountMissing</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.added = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.added += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">counter = BetterCountMissing()</span><br><span class="line">result = defaultdict(counter, current)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> key, amount <span class="keyword">in</span> increments.items():</span><br><span class="line">    result[key] += amount</span><br><span class="line"><span class="keyword">print</span> counter.added</span><br></pre></td></tr></table></figure>
+<p>在上例中，<code>CountMissing</code>和<code>BetterCountMissing</code>类的代码量基本相同，运行结果也完全一致。但在初始化defaultdict时，使用<code>BetterCountMissing</code>的优势就体现出来了，因为它的对象可以直接调用，作为简单的辅助类，它没有多余的成员方法，将它的对象作为hook参数避免了一次成员引用，代码也就更加简洁。</p>
+<h4 id="0x33-Use-classmethod-polymorphism-to-construct-objects-generically"><a href="#0x33-Use-classmethod-polymorphism-to-construct-objects-generically" class="headerlink" title="0x33. Use @classmethod polymorphism to construct objects generically"></a>0x33. Use @classmethod polymorphism to construct objects generically</h4><p>第一个知识点：基类用<strong>抛出NotImplementedError实现抽象类的特性</strong>，python没有语法层面的抽象类机制，但可以通过抛出异常来达到相同的效果。</p>
+<p>通过MapReduce的框架来阐述如何实现多态和利用。MapReduce框架的特点是，拥有多种input方式，worker的处理函数也多种多样。但input都遵循一定的模式，例如产生pipeline形式的数据流。而每个worker也都享有map和reduce两种通用的方法（在Hadoop里面是把worker分为MapWorker和ReduceWorker，而动态语言可以弱化对input/output的类型限制）。因此，我们会想到把input和worker分别封装成类。这就带来一个问题：通用的worker类怎么引用通用的input类？</p>
+<p>直接用代码连接似乎不太通用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mapreduce</span><span class="params">(data_dir)</span>:</span></span><br><span class="line">    inputs = generate_inputs(data_dir)</span><br><span class="line">    workers = create_workers(inputs)</span><br><span class="line">    <span class="keyword">return</span> execute(workers)</span><br></pre></td></tr></table></figure>
+<p>以上是mapreduce框架的入口，但其中的<code>generate_inputs</code>和<code>create_workers</code>都是普通函数，前者需要根据实际情况重新编写（例如这里传入了<code>data_dir</code>）、后者则是一个不依赖于特定worker的具体通用方法，那么更好的方法就是把这两个函数分别放在input和worker类中。这两个方法并不是对象级别的，而是类级别的多态。例如，通用的Worker类就可以这样设计：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GenericWorker</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reduce</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line">    </span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_workers</span><span class="params">(cls, input_class, config)</span>:</span></span><br><span class="line">        workers = []</span><br><span class="line">        <span class="keyword">for</span> input_data <span class="keyword">in</span> input_class.generate_inputs(config):</span><br><span class="line">            workers.append(cls(input_data))</span><br><span class="line">        <span class="keyword">return</span> workers</span><br></pre></td></tr></table></figure>
+<p>上述代码的第11行中，generate_inputs是根据传入的类动态绑定的，也就实现了类级别的多态性。而第12行则是用了cls参数构造对象，用法就和普通的构造函数一样，这个特征也是类方法(class method)区别于静态方法(static method)的地方。</p>
+<p>最后，mapreduce入口函数也就可以接受input/worker类作为参数，而用户只需要根据具体需求继承input和worker类就好了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mapreduce</span><span class="params">(input_class, worker_class, config)</span>:</span></span><br><span class="line">    workers = workers_class.create_workers(input_class, config)</span><br><span class="line">    <span class="keyword">return</span> execute(workers)</span><br></pre></td></tr></table></figure>
+<h4 id="0x34-Initialize-parent-classes-with-super"><a href="#0x34-Initialize-parent-classes-with-super" class="headerlink" title="0x34. Initialize parent classes with super"></a>0x34. Initialize parent classes with super</h4><p>在单继承中，python可以通过直接调用基类的<code>__init__</code>方法来实现从基类的构造：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sub</span><span class="params">(Base)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        Base.__init__(self)</span><br></pre></td></tr></table></figure>
+<p>但对于多继承的对象来说，这种写法就可能造成错误，最大的问题在于菱形继承时，共同的基础超类的构造方法会被重复调用。这里涉及到MRO(method resolution order)的标准，目的就是解决多继承中的构造顺序问题。</p>
+<p>MRO属于python对象模型的内容，这里暂时不深入，在应用层代码的层面，需要了解的是<code>super</code>函数。引用标准文档中对于<code>super</code>函数的解释是：</p>
+<blockquote>
+<p>Return a proxy object that delegates method calls to a parent or sibling class of <em>type</em>.</p>
+</blockquote>
+<p><code>super</code>返回的可能是类的超类，也可能是邻类，对象模型层面上，它返回的是<strong>类的MRO链上的下一个元素</strong>。MRO链上，第一个元素是当前类本身，最后一个元素是object类，MRO链通过一种拓扑排序将继承关系序列化，这样就能避免重复调用基类的构造函数，而具体的序列化方法根据版本的不同也有差异。在python中，初始化超类都应该用<code>super</code>函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyBaseClass</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseClassOne</span><span class="params">(MyBaseClass)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(BaseClassOne, self).__init__()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseClassTwo</span><span class="params">(MyBaseClass)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(BaseClassTwo, self).__init__()</span><br><span class="line">        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySubClass</span><span class="params">(BaseClassOne, BaseClassTwo)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(MySubClass, self).__init__()</span><br></pre></td></tr></table></figure>
+<p>这样，所有类的构造函数都会被调用且只调用一次。上述写法是python2的，而在3中，<code>super</code>函数可以用更简便的写法，避免写两次类名：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Explicit</span><span class="params">(MyBaseClass)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(__class__, self).__init__()</span><br><span class="line">        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Implicit</span><span class="params">(MyBaseClass)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super().__init__()</span><br></pre></td></tr></table></figure>
+<p>所以可以说，py2和py3真的是完全不一样的语言了。</p>
+<h4 id="0x35-Use-multiple-inheritance-only-for-mix-in-utility-classes"><a href="#0x35-Use-multiple-inheritance-only-for-mix-in-utility-classes" class="headerlink" title="0x35. Use multiple inheritance only for mix-in utility classes"></a>0x35. Use multiple inheritance only for mix-in utility classes</h4><p>之前跟别人说过，Java相比其他语言要简单，说的就是它没有多继承的机制。关于多继承是否是面向对象的必要特性的争论已经不是一天两天了，我相信，作为将面向对象发扬光大的语言，Java的“单继承，多接口”的继承模式应该是最成熟的解决方案了。这里也可以看到，python尽管支持多继承，但推荐的mix-in风格仍然只是“单继承、多接口”的一种表现而已。</p>
+<p>mix-in类是一种小型的类，很多时候甚至没有自己的实例属性和构造函数。得益于动态类型的运行时检查机制，可以方便地写出比较通用的工具函数，使得继承该mix-in类的子类也被赋予相应的行为。把简单的行为封装到mix-in组件里，就能用多个mix-in组合出复杂的行为。</p>
+<h4 id="0x36-Prefer-public-attributes-over-private-ones"><a href="#0x36-Prefer-public-attributes-over-private-ones" class="headerlink" title="0x36. Prefer public attributes over private ones"></a>0x36. Prefer public attributes over private ones</h4><p>根据python的编码规范，以两个下划线开头且至多以一个下划线结尾的属性是类的私有(private)属性、以一个下划线开头的属性是受保护(protected)属性。然而这种编码规范并没有带来语法层面的访问控制，其中，私有属性会以可预期的方式重新命名：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        self._pro_value = value - <span class="number">1</span></span><br><span class="line">        self.__pri_value = value + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">b = Base(<span class="number">5</span>)</span><br><span class="line">print(b.__dict__)           <span class="comment"># 获取类的所有属性</span></span><br><span class="line">print(b._pro_value)         <span class="comment"># 获取受保护属性</span></span><br><span class="line">print(b._Base__pri_value)   <span class="comment"># 获取（更名后的）私有属性</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&#123;<span class="string">'_Base__pri_value'</span>: <span class="number">6</span>, <span class="string">'_pro_value'</span>: <span class="number">4</span>&#125;</span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>python不提供私有字段的保护，是基于<strong>we are all consenting adults here</strong>的思想。这时，属性的访问控制只是用来实现开放用户接口的目的而已。尽管这样，仍然建议用protected来修饰非public的属性，并且在文档中说明，这是为了允许子类能够更加灵活地调用超类的内部属性。</p>
+<h4 id="0x37-Inherit-from-collections-abc-for-custom-container-types"><a href="#0x37-Inherit-from-collections-abc-for-custom-container-types" class="headerlink" title="0x37. Inherit from collections.abc for custom container types"></a>0x37. Inherit from collections.abc for custom container types</h4><p>python内置了许多的容器类型，例如list、tuple、set、dictionary等，一般情况下是足够使用的。特殊情况下，定制自己的容器类有几种思路：</p>
+<ul>
+<li><p>继承内置的容器类型，为其添加新的方法</p>
+</li>
+<li><p>实现类的<code>__getitem__</code>方法，此函数对应于对象的下标访问：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyBase</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, i)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'%s_from_gettiem'</span> % str(i)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>mb = MyBase()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(mb[<span class="string">'cba'</span>])</span><br><span class="line">cba_from_gettiem</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承<code>collections.abc</code>中的抽象类</p>
+</li>
+</ul>
+<p>最后一种方法主要弥补了自定义容器中方法概念不一致的情况，例如实现了<code>__getitem__</code>的对象并不能被<code>len</code>方法调用，以及没有<code>list.count</code>等方法。继承抽象类之后，会提示你需要重写哪些方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections.abc <span class="keyword">import</span> Sequence</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CusSeq</span><span class="params">(Sequence)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>myobj = CusSeq()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: Can<span class="string">'t instantiate abstract class CusSeq with abstract methods __getitem__, __len__</span></span><br><span class="line"><span class="string">&gt;&gt;&gt;</span></span><br></pre></td></tr></table></figure>
+<p>重写了对应的方法后，对象就有了相应的行为，并且在概念上是相互一致的。这些类很适合用作<strong>mix-in组件</strong>。值得一提的是，<code>collections.abc</code>模块是在python3.3之后才引入的，在2中没有找到类似的组件。</p>
+<h3 id="0x4-Metaclasses-and-Attributes"><a href="#0x4-Metaclasses-and-Attributes" class="headerlink" title="0x4. Metaclasses and Attributes"></a>0x4. Metaclasses and Attributes</h3><p>学到一个新的名词：rule of least surprise，大意是应该尽量避免产生古怪行为的做法。元类(metaclass)大概是python最古怪的特性了，为了代码的可读性，也应该尽量避免太过特异地使用元类。</p>
+<h4 id="0x41-Use-plain-attributes-instead-of-get-and-set-methods"><a href="#0x41-Use-plain-attributes-instead-of-get-and-set-methods" class="headerlink" title="0x41. Use plain attributes instead of get and set methods"></a>0x41. Use plain attributes instead of get and set methods</h4><p>在Java这样的面向对象型语言里面，属性隐藏是依靠设置私有变量的getter和setter来实现的，通过这种简单的机制，可以避免重要数据被修改或是类型内部不一致的情况。但在python里面，这种冗杂的写法可以避免。</p>
+<p>一般<strong>建议直接用公有变量</strong>，当对变量的读写操作有特殊要求时，可以用<code>@property</code>和<code>@[var].setter</code>修饰器。例如对于电阻类<code>Resistor</code>来说，如果要创建一个电阻值只能为正的子类，可以这么写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Resistor</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, ohms)</span>:</span></span><br><span class="line">        self.ohms = ohms</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BoundedResistor</span><span class="params">(Resistor)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, ohms)</span>:</span></span><br><span class="line">        super().__init__(ohms)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">ohms</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._ohms</span><br><span class="line"></span><br><span class="line"><span class="meta">    @ohms.setter</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">ohms</span><span class="params">(self, ohms)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> ohms &lt;= <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'%.2f ohms must be &gt; 0'</span> % ohms)</span><br><span class="line">        self._ohms = ohms</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>br = BoundedResistor(<span class="number">-9</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(br.ohms)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"gs.py"</span>, line <span class="number">19</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    br = BoundedResistor(<span class="number">-9</span>)</span><br><span class="line">  File <span class="string">"gs.py"</span>, line <span class="number">7</span>, <span class="keyword">in</span> __init__</span><br><span class="line">    super().__init__(ohms)</span><br><span class="line">  File <span class="string">"gs.py"</span>, line <span class="number">3</span>, <span class="keyword">in</span> __init__</span><br><span class="line">    self.ohms = ohms</span><br><span class="line">  File <span class="string">"gs.py"</span>, line <span class="number">16</span>, <span class="keyword">in</span> ohms</span><br><span class="line">    <span class="keyword">raise</span> ValueError(<span class="string">'%.2f ohms must be &gt; 0'</span> % ohms)</span><br><span class="line">ValueError: <span class="number">-9.00</span> ohms must be &gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>注意到调用栈中<code>ohms</code>变量的初始化顺序，首先，第19行处传入了一个负数，这个值在第7行传给了基类的构造器，在第3行处对<code>self.ohms</code>做赋值时触发了第13行的子类中的<code>@ohms.setter</code>，判断为非法数值并抛出异常。而如果传入的参数是正数，那么第20行的<code>br.ohms</code>就会调用第10行的getter。</p>
+<h4 id="0x42-Consider-property-instead-of-refactoring-attributes"><a href="#0x42-Consider-property-instead-of-refactoring-attributes" class="headerlink" title="0x42. Consider @property instead of refactoring attributes"></a>0x42. Consider @property instead of refactoring attributes</h4><p>上一节中提到的<code>@property</code>、<code>@[var].setter</code>装饰器，可以用来操控getter和setter的行为。另一个用处是用来重构一个属性，例如提到的漏桶算法，原来的属性只有一个配额quota，但假设这个属性被广泛使用之后，又要考虑将其重构为max_quota和quota_consumed两个属性的差值。大量修改已有的用户代码是困难的，我们仍然要考虑开放quota作为外部接口，那么这时候就可以使用两个装饰器来定义quota了。</p>
+<p>作者将@property装饰器描述为一种缓冲阶段的重构方案，如果使用得太过频繁，那么就应该考虑重构整个类模型了。</p>
+<h4 id="0x43-Use-descriptors-for-reusable-property-methods"><a href="#0x43-Use-descriptors-for-reusable-property-methods" class="headerlink" title="0x43. Use descriptors for reusable @property methods"></a>0x43. Use descriptors for reusable @property methods</h4><p>python的<strong>描述符协议（descriptor protocol）</strong>由两个magic methods定义：<code>object.__get__</code>和<code>object.__set__</code>，可以用来构建一些通用的对象。</p>
+<p>根据官方文档，两个方法的签名分别是：</p>
+<blockquote>
+<p><code>object.__get__(self, instance, owner)</code><br><code>object.__set__(self, instance, value)</code></p>
+</blockquote>
+<p>这种定义涉及到<code>object.__getattribute__</code>的工作方式（见下节），只要一个类定义了这两种方法，那么这个类的对象就称为描述符。</p>
+<p>示例程序给出了一个记录分数的描述符：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> weakref <span class="keyword">import</span> WeakKeyDictionary</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Grade</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self._values = WeakKeyDictionary()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__get__</span><span class="params">(self, instance, instance_type)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> instance <span class="keyword">is</span> <span class="literal">None</span>: <span class="keyword">return</span> self</span><br><span class="line">        <span class="keyword">return</span> self._values.get(instance, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__set__</span><span class="params">(self, instance, value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> (<span class="number">0</span> &lt;= value &lt;= <span class="number">100</span>):</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'Grade must be between 0 and 100'</span>)</span><br><span class="line">        self._values[instance] = value</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Exam</span><span class="params">(object)</span>:</span></span><br><span class="line">    math_grade = Grade()</span><br><span class="line">    writing_grade = Grade()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">first_exam = Exam()</span><br><span class="line">first_exam.writing_grade = <span class="number">88</span></span><br><span class="line">second_exam = Exam()</span><br><span class="line">second_exam.writing_grade = <span class="number">77</span></span><br><span class="line">print(<span class="string">'First'</span>, first_exam.writing_grade)</span><br><span class="line">print(<span class="string">'Second'</span>, second_exam.writing_grade)</span><br></pre></td></tr></table></figure>
+<p>第一行引入了内置的weakref模块，这个WeakKeyDictionary具有和字典一样的外在接口，不同的是，如果当这个字典中的对象是全局最后的一个引用时，字典会自动释放这个对象，能够有效节省内存。</p>
+<p>Exam类中的两个属性是类属性，如果Grade类不用字典存储而是直接使用普通字段属性，那么first_exam和second_exam的属性就会指向同一个Grade对象。虽然这些字段明显应该的是实例属性，但我们很难保证描述符的使用者会遵循这种对象设计原则。</p>
+<h4 id="0x44-Use-getattr-getattribute-setattr-for-lazy-attributes"><a href="#0x44-Use-getattr-getattribute-setattr-for-lazy-attributes" class="headerlink" title="0x44. Use __getattr__, __getattribute__, __setattr__ for lazy attributes"></a>0x44. Use __getattr__, __getattribute__, __setattr__ for lazy attributes</h4><p>这里先辨析一下类的一对magic methods的区别：<code>__get__</code>表示当<strong>本对象</strong>被引用时应该返回什么值，而<code>__getattr__</code>则是表示<strong>对象的属性</strong>被引用时的返回值，对于set那一对也是如此。因此，<code>__get__</code>用于定义<em>描述符</em>类型的对象，而<code>__getattr__</code>用于<em>按需获取</em>实例属性。</p>
+<p><code>__getattribute__</code>与<code>__getattr__</code>不同的地方在于，访问一个实例属性时，前者会被无条件调用，而后者只有在引发AttributeError的时候才会被调用。因此在用法上，这两者可以有如下的不同：</p>
+<ul>
+<li><code>__getattr__</code>可以按需生成属性，使用内置的setattr将属性绑定到对象上。当访问非法属性名时，应该抛出AttributeError</li>
+<li><code>__getattribute__</code>可以用于对象范围内的通用属性检查。当使用内置的hasattr和getattr函数时，该方法都会被调用</li>
+</ul>
+<p><code>__setattr__</code>方法不需要考虑对象是否存在该属性，因此python中只有一个mutator，但却有两个accessor。</p>
+<p><code>__getattr__</code>只在将要引发AttributeError的情况下才会被调用，而<code>__getattribute__</code>和<code>__setattr__</code>在每一次相关操作时都会被调用。使用这三个方法时都要注意无限递归的情况，特别是后两个，因为它们会被无条件调用，从而在方法内部出现循环引用最终造成调用栈深度溢出。解决的方法是用<code>super().__getattribute__(name)</code>从对象的属性字典中直接取到属性的引用，对其他两个方法同理。</p>
+<h4 id="0x45-Validate-subclasses-with-metaclasses"><a href="#0x45-Validate-subclasses-with-metaclasses" class="headerlink" title="0x45. Validate subclasses with metaclasses"></a>0x45. Validate subclasses with metaclasses</h4><p>元类的使用方式在2/3中有所不同：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sys <span class="keyword">import</span> version_info</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meta</span><span class="params">(type)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, name, bases, attrs)</span>:</span></span><br><span class="line">        print((cls, name, bases, attrs))</span><br><span class="line">        <span class="keyword">return</span> type.__new__(cls, name, bases, attrs)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> version_info.major == <span class="number">2</span>:     <span class="comment"># python2, use __metaclass__</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">MyCLass</span><span class="params">(object)</span>:</span></span><br><span class="line">        __metaclass__ = Meta</span><br><span class="line">        stuff = <span class="number">222</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> version_info.major == <span class="number">3</span>:     <span class="comment"># python3, use metaclass=</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">MyCLass</span><span class="params">(object, metaclass=Meta)</span>:</span></span><br><span class="line">        stuff = <span class="number">333</span></span><br></pre></td></tr></table></figure>
+<p>元类的<code>__new__</code>方法会在子类的定义完成后被调用，其最简单的用途就是验证子类是否符合规范。例如示例代码中，验证多边形是否边数大于等于3，若小于3则抛出异常：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PolygonMeta</span><span class="params">(type)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, name, bases, attrs)</span>:</span></span><br><span class="line">        <span class="comment"># Don't validate the abstract Polygon class</span></span><br><span class="line">        <span class="keyword">if</span> bases != (object,):</span><br><span class="line">            <span class="keyword">if</span> attrs[<span class="string">'sides'</span>] &lt; <span class="number">3</span>:</span><br><span class="line">                <span class="keyword">raise</span> ValueError(<span class="string">'Polygon needs more than 2 sides'</span>)</span><br><span class="line">        <span class="keyword">return</span> type.__new__(cls, name, bases, attrs)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Polygon</span><span class="params">(object, metaclass=PolygonMeta)</span>:</span></span><br><span class="line">    sides = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">interior_angles</span><span class="params">(cls)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> (cls.sides - <span class="number">2</span>) * <span class="number">180</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trianlge</span><span class="params">(Polygon)</span>:</span></span><br><span class="line">    sides = <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Line</span><span class="params">(Polygon)</span>:</span></span><br><span class="line">    sides = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"meta.py"</span>, line <span class="number">19</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Line</span><span class="params">(Polygon)</span>:</span></span><br><span class="line">  File <span class="string">"meta.py"</span>, line <span class="number">6</span>, <span class="keyword">in</span> __new__</span><br><span class="line">    <span class="keyword">raise</span> ValueError(<span class="string">'Polygon needs more than 2 sides'</span>)</span><br><span class="line">ValueError: Polygon needs more than <span class="number">2</span> sides</span><br></pre></td></tr></table></figure>
+<h4 id="0x46-Register-class-existence-with-metaclasses"><a href="#0x46-Register-class-existence-with-metaclasses" class="headerlink" title="0x46. Register class existence with metaclasses"></a>0x46. Register class existence with metaclasses</h4><p>通过序列化一个类的操作说明元类可以实行一些类间通用的行为。例如，在序列化对象之前，先要把类本身注册到某个全局变量上，这样在反序列化时就可以调用该类的构造函数，而这个注册的行为本身就可以通过元类完成，避免代码的重复以及程序员的失误。</p>
+<p>这种注册类的设计模式还可以用于ORM（object-relationship mapping）、插件系统等场景。</p>
+<h4 id="0x47-Annotate-class-attributes-with-metaclasses"><a href="#0x47-Annotate-class-attributes-with-metaclasses" class="headerlink" title="0x47. Annotate class attributes with metaclasses"></a>0x47. Annotate class attributes with metaclasses</h4><p>借助元类，可以在类完全定义好之前修改该类的属性，书中给出的是ORM的一种实现，似乎这也是大部分元编程示例使用到的一种use case。下面两段代码能产生完全相同的外部行为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># First case </span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Field</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.name = name</span><br><span class="line">        self.internal_name = <span class="string">'_'</span> + self.name</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__get__</span><span class="params">(self, instance, instance_type)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> instance <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> self</span><br><span class="line">        <span class="keyword">return</span> getattr(instance, self.internal_name, <span class="string">''</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__set__</span><span class="params">(self, instance, value)</span>:</span></span><br><span class="line">        setattr(instance, self.internal_name, value)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span><span class="params">(object)</span>:</span></span><br><span class="line">    first_name = Field(<span class="string">'first_name'</span>)</span><br><span class="line">    last_name = Field(<span class="string">'last_name'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Second case</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Field</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.name = <span class="literal">None</span></span><br><span class="line">        self.internal_name = <span class="literal">None</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__get__</span><span class="params">(self, instance, instance_type)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> instance <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> self</span><br><span class="line">        <span class="keyword">return</span> getattr(instance, self.internal_name, <span class="string">''</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__set__</span><span class="params">(self, instance, value)</span>:</span></span><br><span class="line">        setattr(instance, self.internal_name, value)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meta</span><span class="params">(type)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(meta, name, bases, attrs)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> key, value <span class="keyword">in</span> attrs.items():</span><br><span class="line">            <span class="keyword">if</span> isinstance(value, Field):</span><br><span class="line">                value.name = key</span><br><span class="line">                value.internal_name = <span class="string">'_'</span> + key</span><br><span class="line">        <span class="keyword">return</span> type.__new__(meta, name, bases, attrs)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DatabaseRow</span><span class="params">(object, metaclass=Meta)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span><span class="params">(DatabaseRow)</span>:</span></span><br><span class="line">    first_name = Field()</span><br><span class="line">    last_name = Field()</span><br></pre></td></tr></table></figure>
+<p>对于Customer类的字段的值绑定，前者是在Field类中完成的，需要自行传入<code>__init__</code>中；后者则是在metaclass中绑定的，可以避免在Customer类中重复传入字段名。下面的测试代码，两种写法都能够产生相同的结果，但对于Customer类的定义，显然是后者较优。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">foo = Customer()</span><br><span class="line">print(<span class="string">'Before:'</span>, repr(foo.first_name), foo.__dict__)</span><br><span class="line">foo.first_name = <span class="string">'Euclid'</span></span><br><span class="line">print(<span class="string">'After:'</span>, repr(foo.first_name), foo.__dict__)</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">Before: <span class="string">''</span> &#123;&#125;</span><br><span class="line">After: <span class="string">'Euclid'</span> &#123;<span class="string">'_first_name'</span>: <span class="string">'Euclid'</span>&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/book-reading/" rel="tag"># book reading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/09/study/EffectivePython_1/" rel="prev" title="《Effective Python》读书笔记（一）">
+      <i class="fa fa-chevron-left"></i> 《Effective Python》读书笔记（一）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/03/17/ctf/crypto/N1CTF2018-easyfs/" rel="next" title="N1CTF 2018 - easy_fs">
+      N1CTF 2018 - easy_fs <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x3-Classes-and-Inheritance"><span class="nav-number">1.</span> <span class="nav-text">0x3. Classes and Inheritance</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x31-Prefer-helper-classes-over-bookkeeping-with-dictionaries-and-tuples"><span class="nav-number">1.1.</span> <span class="nav-text">0x31. Prefer helper classes over bookkeeping with dictionaries and tuples</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x32-Accept-functions-for-simple-interfaces-instead-of-classes"><span class="nav-number">1.2.</span> <span class="nav-text">0x32. Accept functions for simple interfaces instead of classes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x33-Use-classmethod-polymorphism-to-construct-objects-generically"><span class="nav-number">1.3.</span> <span class="nav-text">0x33. Use @classmethod polymorphism to construct objects generically</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x34-Initialize-parent-classes-with-super"><span class="nav-number">1.4.</span> <span class="nav-text">0x34. Initialize parent classes with super</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x35-Use-multiple-inheritance-only-for-mix-in-utility-classes"><span class="nav-number">1.5.</span> <span class="nav-text">0x35. Use multiple inheritance only for mix-in utility classes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x36-Prefer-public-attributes-over-private-ones"><span class="nav-number">1.6.</span> <span class="nav-text">0x36. Prefer public attributes over private ones</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x37-Inherit-from-collections-abc-for-custom-container-types"><span class="nav-number">1.7.</span> <span class="nav-text">0x37. Inherit from collections.abc for custom container types</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x4-Metaclasses-and-Attributes"><span class="nav-number">2.</span> <span class="nav-text">0x4. Metaclasses and Attributes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x41-Use-plain-attributes-instead-of-get-and-set-methods"><span class="nav-number">2.1.</span> <span class="nav-text">0x41. Use plain attributes instead of get and set methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x42-Consider-property-instead-of-refactoring-attributes"><span class="nav-number">2.2.</span> <span class="nav-text">0x42. Consider @property instead of refactoring attributes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x43-Use-descriptors-for-reusable-property-methods"><span class="nav-number">2.3.</span> <span class="nav-text">0x43. Use descriptors for reusable @property methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x44-Use-getattr-getattribute-setattr-for-lazy-attributes"><span class="nav-number">2.4.</span> <span class="nav-text">0x44. Use __getattr__, __getattribute__, __setattr__ for lazy attributes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x45-Validate-subclasses-with-metaclasses"><span class="nav-number">2.5.</span> <span class="nav-text">0x45. Validate subclasses with metaclasses</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x46-Register-class-existence-with-metaclasses"><span class="nav-number">2.6.</span> <span class="nav-text">0x46. Register class existence with metaclasses</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x47-Annotate-class-attributes-with-metaclasses"><span class="nav-number">2.7.</span> <span class="nav-text">0x47. Annotate class attributes with metaclasses</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cirq"
+      src="/assets/blogimg/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cirq</p>
+  <div class="site-description" itemprop="description">technical/leisure blog, personal website</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/CirQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;CirQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cirq999@163.com" title="E-Mail → mailto:cirq999@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

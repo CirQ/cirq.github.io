@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://blog.cirq.me').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="现在是大年初六，距离发表应该还有一段时间，真希望这个被我坑了很久的课程能尽快完成。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6.00 Introduction to Computer Science and Programming 学习笔记（三）">
+<meta property="og:url" content="http://blog.cirq.me/2018/02/21/study/MIT600_3/index.html">
+<meta property="og:site_name" content="CirQ House">
+<meta property="og:description" content="现在是大年初六，距离发表应该还有一段时间，真希望这个被我坑了很久的课程能尽快完成。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-02-21T04:59:01.000Z">
+<meta property="article:modified_time" content="2019-12-17T14:53:59.310Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="mit600">
+<meta property="article:tag" content="open course">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.cirq.me/2018/02/21/study/MIT600_3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>MIT6.00 Introduction to Computer Science and Programming 学习笔记（三） | CirQ House</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-113361344-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CirQ House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">I hear the sound.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/02/21/study/MIT600_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT6.00 Introduction to Computer Science and Programming 学习笔记（三）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-02-21 12:59:01" itemprop="dateCreated datePublished" datetime="2018-02-21T12:59:01+08:00">2018-02-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-17 22:53:59" itemprop="dateModified" datetime="2019-12-17T22:53:59+08:00">2019-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index">
+                    <span itemprop="name">study</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>现在是大年初六，距离发表应该还有一段时间，真希望这个被我坑了很久的课程能尽快完成。</p>
+<a id="more"></a>
+<hr>
+<p><strong>Lec.13</strong><br>Content: Dynamic programming: overlapping subproblems, optimal substructure<br>Link: <a href="https://www.youtube.com/watch?v=ZKBUu_ahSR4" target="_blank" rel="noopener">here</a></p>
+<p>求斐波那契数列应该是最简单的动态规划的应用，如果用递归解法，会产生大量的overlapping subproblems。如果不做记忆化，那么重复子问题会被多次求解，时间复杂度也就成指数倍增长。</p>
+<p>定义相互重叠的子问题，并对子问题做记忆化，就是动态规划(dynamic programming)的核心。这与分治(divide and conquer)算法是很不一样的，尽管两者的子问题都要求结构相同，但分治的子问题之间是相互独立的。当用于解决优化问题时，DP要求每个子问题有最优的子结构，这样，最终的结果才是最优的。</p>
+<p>动态规划可以很有效地解决01背包问题，课上给出的方案就是普通的回溯加上记忆化，效率也能够得到极大的提升。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_val</span><span class="params">(w, v, i, K)</span>:</span>                            <span class="comment"># 普通的回溯方案，递归写法</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="number">0</span>:                                      <span class="comment"># 递归base case，只有一个物品</span></span><br><span class="line">        <span class="keyword">return</span> v[i] <span class="keyword">if</span> w[i] &lt;= K <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    without_i = max_val(w, v, i<span class="number">-1</span>, K)               <span class="comment"># 不取第i个物品的最大价值</span></span><br><span class="line">    <span class="keyword">if</span> w[i] &gt; K:                                    <span class="comment"># 此时已经放不下物品i</span></span><br><span class="line">        <span class="keyword">return</span> without_i</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        with_i = v[i] + max_val(w, v, i<span class="number">-1</span>, K-w[i])  <span class="comment"># 取第i个物品的最大价值</span></span><br><span class="line">        <span class="keyword">return</span> max(with_i, without_i)               <span class="comment"># 选择放与不放的较大者</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">zero_one_knapsack</span><span class="params">(weights, values, capacity)</span>:</span>   <span class="comment"># 封装方法</span></span><br><span class="line">    <span class="keyword">assert</span> len(weights) == len(values) <span class="keyword">and</span> capacity &gt;= <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> max_val(weights, values, len(weights), capacity)</span><br></pre></td></tr></table></figure>
+<p>上述代码不带记忆化，因而会遍历整个问题空间。对$n$个物品而言，共有$2^n$种可能的选择组合，所以复杂度是指数级别的。但仔细观察上面的代码，会发现<code>max_val</code>函数的实际变量只有数字<code>i</code>和<code>K</code>，返回的是一个数字代表最大价值，并且只要<code>i</code>和<code>K</code>相同，这个最大价值就是相同的。很容易联想到设置一个记录表用于查找，映射关系是</p>
+<script type="math/tex; mode=display">(index, capacity)\rightarrow max\_value</script><p>利用tuple作键，就能方便地实现这一操作了。</p>
+<hr>
+<p><strong>Lec.14</strong><br>Content: Analysis of knapsack problem; introduction to object-oriented programming<br>Link: <a href="https://www.youtube.com/watch?v=le8tpXQyYcM" target="_blank" rel="noopener">here</a></p>
+<p>对于记忆化的01背包解决，时间复杂度是$O(nK)$，这属于伪多项式级(pseudo-polynomial)的效率。这个结论的推导是基于子问题的解决次数的，而不再着眼于那些繁杂的基本操作，基于上节最后给出的映射关系，当一张$n \times K$的表格被填满后，剩下的子问题都可以在$O(1)$的时间内被完成，因此可以简单地得出结论。</p>
+<p>课上给出了一种变式是将约束条件增加到重量和体积得同时满足，那么只需在原代码的检查约束的地方增加多一个布尔条件即可。而我自己想到的一种变式是，如果相同物品有多个，即可以选择多于一个，那么只需要将这复数个重复物品视为不同物品，这个变式就被规约到普通的01背包了。</p>
+<hr>
+<p><strong>Lec.15</strong><br>Content: Abstract data types, classes and methods<br>Link: <a href="https://www.youtube.com/watch?v=y81AhLQN-NI" target="_blank" rel="noopener">here</a></p>
+<p>模块化(modularization)的目的是将具有相关联的函数与数据进行打包，而面向对象编程中的类(class)就是一种特殊的模块。它的特殊之处在于可以实例化，这样各个实例可以封装自身的私有数据，共享公有的数据和方法等。</p>
+<p>剩下的便是一些简单的python的面向对象特性语法。python提供了一个<code>dir([object])</code>函数，可以方便地查看对象所有的属性和方法，可以通过重写对象的<code>__dir__</code>方法来覆盖它的行为。</p>
+<p>另外，python自带的<code>help</code>函数能用于查看任何对象、模块的文档，十分便利。</p>
+<hr>
+<p><strong>Lec.16</strong><br>Content: Encapsulation, inheritance, shadowing<br>Link: <a href="https://www.youtube.com/watch?v=Q8SoG1OIveU" target="_blank" rel="noopener">here</a></p>
+<p>老生常谈的面向对象三大特性：封装(encapsulation)、继承(inheritance)、多态(polymorphism)，最后一个也称作shadowing。</p>
+<p>现代一点的高级语言基本都支持面向对象的编程范式，或多或少地实现了这些特性，详细讨论起来肯定是一片大文章。考虑到本人水平有限，也就无法展开了。然而我至今还是认为，面向对象带来的讨论，特别是设计模式，是某些程序语言社区的阴谋，为了让人们的重心脱离编程本身，陷入解决实际问题以外的无底洞，从而树立起宗教一样的、以单一种（或一类）语言为中心的党派，割裂程序员群体。这可以说是相当无意义的了。</p>
+<hr>
+<p><strong>Lec.17</strong><br>Content: Computational models: random walk simulation<br>Link: <a href="https://www.youtube.com/watch?v=ZbIpjf0QEPI" target="_blank" rel="noopener">here</a></p>
+<p>这一节开始，课程转向了计算问题(computational problem)。与精心设计的像动态规划或分治算法不同，这一类问题的一个特点是，使用大量的重复计算来逐步得到最终结果，而这通常难以用纸笔演算得到。这大概就是计算机的终极美学了。</p>
+<p>这类计算模型通常类似于暴力(brute force)，且带有一定的随机性，目的就是通过大量的随机试验来取得接近实际问题的结果。其中一个最简单的模型就是随机游走(random walk)。</p>
+<blockquote>
+<p>一个人站在二维网格的原点，每秒随机向上下左右的其中一个方向移动一单位距离。经过一段时间后，他离原点的期望距离有多远？</p>
+</blockquote>
+<p>一个很显然的考虑是，这个距离是否会随着时间的增加而变长？简单地想，当步数为奇数时，是无法回到原点的；而当步数为偶数时，假设人走了两步，那他只有1/4的几率回到原来的位置。这样看，我们很难认定最终距离会是常数。这时候就可以发挥计算机程序的暴力美学了：通过模拟这一事件，多次试验后期望能接近一个合理的结果。</p>
+<hr>
+<p><strong>Lec.18</strong><br>Content: Presenting simulation results, Pylab, plotting<br>Link: <a href="https://www.youtube.com/watch?v=QJ_MPc0TobI" target="_blank" rel="noopener">here</a></p>
+<p>多次试验后，上节提出的问题的答案并不随着步数增加而收敛，也就是说，离原点的距离是随着时间一直增长的。课程上只给了仿真的结果，但实际上，最终距离的期望是$\sqrt{N}$，其中$N$是所走的步数，且与空间的维度无关，这个结论与课堂仿真的结果实相符的。通过谷歌可以查到许多关于这个结论的推导过程，这里只给出一种简化情况的证明。</p>
+<p>考虑二维网格中，人每步前进距离为1，且可选择的有四个方向，那么一共会产生四种可能的单位向量：$(1, 0),\ (-1, 0),\ (0, 1),\ (0, -1)$。将这些向量标记为$(x_i, y_i)$，那么$N$步以后就会产生$N$个向量，它们的和就是最终偏移原点的结果。根据初等的几何原理，可以得到该距离的平方是：</p>
+<script type="math/tex; mode=display">R^2=(x_1+x_2+\dots+x_n)^2+(y_1+y_2+\dots+y_n)^2</script><script type="math/tex; mode=display">=x_1^2+\dots+x_n^2+y_1^2+\dots+y_n^2+2x_1x_2+2x_1x_3+\dots+2y_1y_2+\dots</script><p>显然$x_i^2+y_i^2=1$，由于$x_i$和$y_i$是均匀分布的，因此后面的混合积之和的期望值应该为0。于是我们得到结果：$R=\sqrt{n}$。</p>
+<p>这个推导过程来源于《从一到无穷大》第八章，注意到这个结论不依赖于方向是否正交，甚至不限定在二维空间！在欧式空间中，只要每一步的距离都是1，那么最终的期望偏离原点的距离就是步数的平方根，这是一个相当优美的结论。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mit600/" rel="tag"># mit600</a>
+              <a href="/tags/open-course/" rel="tag"># open course</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/02/16/leisure/Yaomaozhuan/" rel="prev" title="天长地久有时尽，此恨绵绵无绝期">
+      <i class="fa fa-chevron-left"></i> 天长地久有时尽，此恨绵绵无绝期
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/02/22/techniques/canvas-nest/" rel="next" title="canvas-nest.js源码阅读笔记">
+      canvas-nest.js源码阅读笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cirq"
+      src="/assets/blogimg/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cirq</p>
+  <div class="site-description" itemprop="description">technical/leisure blog, personal website</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/CirQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;CirQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cirq999@163.com" title="E-Mail → mailto:cirq999@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+</body>
+</html>
