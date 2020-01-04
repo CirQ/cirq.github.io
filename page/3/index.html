@@ -183,6 +183,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/02/07/ctf/crypto/Codegate2018-rsababy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/02/07/ctf/crypto/Codegate2018-rsababy/" class="post-title-link" itemprop="url">Codegate CTF 2018 - RSAbaby</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-02-07 16:16:51" itemprop="dateCreated datePublished" datetime="2018-02-07T16:16:51+08:00">2018-02-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-04 09:24:03" itemprop="dateModified" datetime="2020-01-04T09:24:03+08:00">2020-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/" itemprop="url" rel="index">
+                    <span itemprop="name">ctf</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ctf/crypto/" itemprop="url" rel="index">
+                    <span itemprop="name">crypto</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>写在前面</strong></p>
+<p>这次codegate的参赛十分仓促，前一天晚上还约好了和老王第二天一起去吃饭，早上起床才发现比赛已经开始了。毫无准备的情况下，花了一个多小时解决了第一道crypto，过程也相当简单，直接分解rsa公钥得到私钥后就可以解密tls的流量包了，这里不再详细展开。临近午饭时第二道crypto上线，匆忙一览大致了解题意就出去吃饭了，然而回来一直没有思路。说来也惭愧，该题解法是赛后看wp才知道的，难度大致相当于一道高考数学大题。想来自己一直自诩数学尚可的crypter，但连最基本的RSA加解密原理都不大清楚，一下子就栽倒在这道题上。也正因如此，萌生了要复现本题答案并以博客的形式记录下来的想法。第一次认真地写writeup，希望（并不存在的）各位多多指教。</p>
+<p><strong>题目</strong></p>
+<p>打开压缩包，里面提供的是两个文件，一个是加密算法，另一个是加密的结果。可以说，RSA基本是ctf的crypto必考题，这道题目也没有过多的修饰，就是一个RSA的新轮子而已。题目提供的信息很明确，密文解密的结果就是flag，加密方案是普通的RSA算法。除了密文外，已知的参数有四个，全部在生成密钥的阶段给出：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/02/07/ctf/crypto/Codegate2018-rsababy/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/02/06/study/MIT600_2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -496,16 +588,16 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
