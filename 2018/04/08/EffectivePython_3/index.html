@@ -280,11 +280,8 @@
 <ol>
 <li><code>collections.dequeue</code>：双向队列，不多说</li>
 <li><code>collections.OrderedDict</code>：有序字典，能够保证字典迭代的顺序总是key的插入顺序</li>
-<li><p><code>collections.defaultdict</code>：为字典提供默认值，例如一个常用的计数器，提供0作为默认值：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stats = defaultdict(int)</span><br><span class="line">stats[<span class="string">'key_1'</span>] += <span class="number">1</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>heapq</code>：提供了一些函数，能使普通的list类拥有优先队列的行为</p>
-</li>
+<li><code>collections.defaultdict</code>：为字典提供默认值，例如一个常用的计数器，提供0作为默认值：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stats = defaultdict(int)</span><br><span class="line">stats[<span class="string">'key_1'</span>] += <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
+<li><code>heapq</code>：提供了一些函数，能使普通的list类拥有优先队列的行为</li>
 <li><code>bisect</code>：二分搜索算法</li>
 <li><code>itertools</code>：直接看<a href="https://docs.python.org/3.6/library/itertools.html" target="_blank" rel="noopener">官方文档</a>会更详细</li>
 </ol>
