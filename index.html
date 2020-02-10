@@ -183,6 +183,89 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2020/02/10/study/android-permission/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/10/study/android-permission/" class="post-title-link" itemprop="url">关于Android的minSdkVersion、targetSdkVersion和compileSdkVersion</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-10 15:23:53" itemprop="dateCreated datePublished" datetime="2020-02-10T15:23:53+08:00">2020-02-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-11 00:21:32" itemprop="dateModified" datetime="2020-02-11T00:21:32+08:00">2020-02-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index">
+                    <span itemprop="name">study</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          password is required to read the content
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/10/study/android-permission/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2020/01/04/techniques/hexo-encrypt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -206,10 +289,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-01-04 14:28:55 / 修改时间：23:34:39" itemprop="dateCreated datePublished" datetime="2020-01-04T14:28:55+08:00">2020-01-04</time>
+              <time title="创建时间：2020-01-04 14:28:55" itemprop="dateCreated datePublished" datetime="2020-01-04T14:28:55+08:00">2020-01-04</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-11 00:21:12" itemprop="dateModified" datetime="2020-02-11T00:21:12+08:00">2020-02-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -233,15 +322,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          password is required to read the content
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/01/04/techniques/hexo-encrypt/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>You find the content! Try <a href="https://github.com/MikeCoder/hexo-blog-encrypt" target="_blank" rel="noopener">it</a>!</p>
+<h2 id="Story"><a href="#Story" class="headerlink" title="Story"></a>Story</h2><p>在hexo的插件列表里面找到一个有意思的插件，用来加密文章的。一开始想的是，解密的所有操作都发生在前端，怎么能够保证隐私性呢？于是去看了源码，发现自己在应用密码学上的思路还是欠缺了，所以在这里多写一段关于这个插件是怎么工作的。</p>
+<p>在要加密的文章头部加一个<code>password:</code>字段，用来声明加密的密码，实际上也就是用来加密的密钥。加密的算法用到了两个部件，一个是加密算法<code>AES256-CBC</code>，另一个是消息认证码<code>HMAC-SHA256</code>。密钥是通过<a href="https://en.wikipedia.org/wiki/PBKDF2" target="_blank" rel="noopener">PBKDF2</a>算法产生的，可以避免基于爆破密钥的攻击。当然，在这个场景下爆破攻击仍然存在，但通过这种密钥推导（key derivation）也能够生成较为安全的密钥。</p>
+<p>具体的加密算法接受两个参数<code>(pw, msg)</code>，代表密码和文章，输出也是两元组<code>(c, h)</code>，密文和一个消息摘要。加密的过程如下：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">key = <span class="constructor">PBKDF2_SHA256(<span class="params">pw</span>, <span class="params">salt_key</span>, 1024, 256)</span></span><br><span class="line">iv = <span class="constructor">PBKDF2_SHA256(<span class="params">pw</span>, <span class="params">salt_iv</span>, 512, 128)</span></span><br><span class="line">c = <span class="constructor">AES256_CBC(<span class="params">key</span>, <span class="params">iv</span>)</span>.encrypt(msg)</span><br><span class="line">h = <span class="constructor">HMAC_SHA256(<span class="params">key</span>)</span>.sign(msg)</span><br></pre></td></tr></table></figure>
+<p>可以看到，<code>key</code>和<code>iv</code>都是同一个密码推导出来的，但这不算威胁，因为本来IV就被设计成可以公开的密文的一部分（另一个角度来看，<code>iv</code>的存在暴露了和<code>key</code>的联系。不过由于SHA256是单向的，这不是大问题）。这样来看，剩下的威胁是三个：</p>
+<ul>
+<li>IV是确定性算法生成的，相当于整个加密系统的随机性都来源于密钥（实际上是密码）</li>
+<li>加密算法和消息认证码采用了相同的密钥，相当于hmac没起到认证的作用</li>
+<li>用E&amp;A的认证模式，本质上也是不安全的</li>
+</ul>
+<p>说来也有趣，后两点都在这学期修的CS403中讲到了。但它们都是在理论层面上声称为不安全的。实际上，作者加入hmac的目的也不是为了认证，而是为了在解密成功时，避免错误的明文造成困扰（padding-oracle的存在告诉我们，只有当填充不正确时，才会出现解密失败）。通过上述分析，基本可以认为，这个系统的弱点只可能来源于IV。但现在还不能证明这个加密是（不）安全的，所以就到此为止吧【烂尾】。</p>
+
       
     </div>
 
@@ -932,95 +1025,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/04/23/ctf/pwn/QWB2018awd-revolver/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
-      <meta itemprop="name" content="cirq">
-      <meta itemprop="description" content="technical/leisure blog, personal website">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="CirQ House">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/23/ctf/pwn/QWB2018awd-revolver/" class="post-title-link" itemprop="url">强网杯2018 线下赛 - revolver</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-04-23 17:07:13" itemprop="dateCreated datePublished" datetime="2018-04-23T17:07:13+08:00">2018-04-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-01-04 09:24:58" itemprop="dateModified" datetime="2020-01-04T09:24:58+08:00">2020-01-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf/" itemprop="url" rel="index">
-                    <span itemprop="name">ctf</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ctf/pwn/" itemprop="url" rel="index">
-                    <span itemprop="name">pwn</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>感觉今年强网杯能够进入线下赛是相当梦幻的，原本线上赛28名，因为几队大佬不肯露脸出战，幸运地以22名的位置进入线下赛，代价是牺牲了自己的手持证件照。想想主办方也是厉害，靠着一场比赛收集到了全中国最注重个人隐私的一群人的身份证照。尽管结果基本没有悬念，但人争一张脸树争一张皮，我们还是给自己定了“维持参赛时的22名”的小目标，所幸实力加运气，最后还是超额完成目标。一个周末的时间都花在这里，毕业论文又暂时hang了，收获是见识到真正的神仙打架，也知道自己和大佬们的差距在哪里，参观了平日基本不可能以个人目的进去的军校，顺带见识了郑州（河南）的风土人情，也算是收获颇丰了。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/23/ctf/pwn/QWB2018awd-revolver/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1093,7 +1097,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1102,7 +1106,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
