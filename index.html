@@ -183,6 +183,84 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2020/04/21/techniques/native-package/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/21/techniques/native-package/" class="post-title-link" itemprop="url">一次打包jar-with-native的经历</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-21 14:57:00 / 修改时间：14:58:57" itemprop="dateCreated datePublished" datetime="2020-04-21T14:57:00+08:00">2020-04-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/techniques/" itemprop="url" rel="index">
+                    <span itemprop="name">techniques</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近参与一个共同项目，在里面各种划水，抱着队友的大腿，自己主动挑一些边边角角的任务去做，显得好像自己也在参与一样（笑）。落脚点依然是自己的舒适区，好听点叫“提升工程效率”，说白了就是减轻（不知道有没有人去后续维护）的后续维护者的上手负担，以及减少（减少了他们也不一定看得出来的）用户使用项目成果的难度。</p>
+<p>这次的具体需求是，要把<a href="https://github.com/Z3Prover/z3" target="_blank" rel="noopener">Z3</a>的java版本打包进可执行的jar里面，使得用kotlin写的工具能够方便地调用Z3接口。Z3调用部分的代码队友已经写好了，在自己的IDE上跑起来也顺风顺水，然而打包成jar就出问题了。原因是没有将native库打包进去，使得执行jar的时候无法加载到这些库。所以这篇文章就分享一下这次打包native库的经验。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/21/techniques/native-package/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2020/02/10/study/android-permission/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -942,89 +1020,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2018/05/13/leisure/ditf17/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
-      <meta itemprop="name" content="cirq">
-      <meta itemprop="description" content="technical/leisure blog, personal website">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="CirQ House">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/05/13/leisure/ditf17/" class="post-title-link" itemprop="url">Darling in the franxx 17集 观后随想</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-13 08:21:45" itemprop="dateCreated datePublished" datetime="2018-05-13T08:21:45+08:00">2018-05-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-01-04 09:29:40" itemprop="dateModified" datetime="2020-01-04T09:29:40+08:00">2020-01-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/leisure/" itemprop="url" rel="index">
-                    <span itemprop="name">leisure</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在南京回来的高铁上看完第17集，大概是真正感受到了“心情久久不能平复”的感觉。随即决定写点什么，算是把自己看这部片这么久的感受记录下来吧，没什么文笔，反正也不会有人看（笑</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/05/13/leisure/ditf17/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1097,7 +1092,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1106,7 +1101,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

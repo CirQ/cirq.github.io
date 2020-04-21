@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/blogimg/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/blogimg/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://blog.cirq.me').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="背景最近参与一个共同项目，在里面各种划水，抱着队友的大腿，自己主动挑一些边边角角的任务去做，显得好像自己也在参与一样（笑）。落脚点依然是自己的舒适区，好听点叫“提升工程效率”，说白了就是减轻（不知道有没有人去后续维护）的后续维护者的上手负担，以及减少（减少了他们也不一定看得出来的）用户使用项目成果的难度。 这次的具体需求是，要把Z3的java版本打包进可执行的jar里面，使得用kotlin写的工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一次打包jar-with-native的经历">
+<meta property="og:url" content="http://blog.cirq.me/2020/04/21/techniques/native-package/index.html">
+<meta property="og:site_name" content="CirQ House">
+<meta property="og:description" content="背景最近参与一个共同项目，在里面各种划水，抱着队友的大腿，自己主动挑一些边边角角的任务去做，显得好像自己也在参与一样（笑）。落脚点依然是自己的舒适区，好听点叫“提升工程效率”，说白了就是减轻（不知道有没有人去后续维护）的后续维护者的上手负担，以及减少（减少了他们也不一定看得出来的）用户使用项目成果的难度。 这次的具体需求是，要把Z3的java版本打包进可执行的jar里面，使得用kotlin写的工具">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.cirq.me/2020/04/21/techniques/native-package/z3-ubuntu.png">
+<meta property="article:published_time" content="2020-04-21T06:57:00.000Z">
+<meta property="article:modified_time" content="2020-04-21T06:58:57.227Z">
+<meta property="article:author" content="cirq">
+<meta property="article:tag" content="jar packaging">
+<meta property="article:tag" content="native libraries">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.cirq.me/2020/04/21/techniques/native-package/z3-ubuntu.png">
+
+<link rel="canonical" href="http://blog.cirq.me/2020/04/21/techniques/native-package/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>一次打包jar-with-native的经历 | CirQ House</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113361344-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-113361344-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CirQ House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">I hear the sound.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.cirq.me/2020/04/21/techniques/native-package/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/blogimg/avatar.jpg">
+      <meta itemprop="name" content="cirq">
+      <meta itemprop="description" content="technical/leisure blog, personal website">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CirQ House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一次打包jar-with-native的经历
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-21 14:57:00 / 修改时间：14:58:57" itemprop="dateCreated datePublished" datetime="2020-04-21T14:57:00+08:00">2020-04-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/techniques/" itemprop="url" rel="index">
+                    <span itemprop="name">techniques</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近参与一个共同项目，在里面各种划水，抱着队友的大腿，自己主动挑一些边边角角的任务去做，显得好像自己也在参与一样（笑）。落脚点依然是自己的舒适区，好听点叫“提升工程效率”，说白了就是减轻（不知道有没有人去后续维护）的后续维护者的上手负担，以及减少（减少了他们也不一定看得出来的）用户使用项目成果的难度。</p>
+<p>这次的具体需求是，要把<a href="https://github.com/Z3Prover/z3" target="_blank" rel="noopener">Z3</a>的java版本打包进可执行的jar里面，使得用kotlin写的工具能够方便地调用Z3接口。Z3调用部分的代码队友已经写好了，在自己的IDE上跑起来也顺风顺水，然而打包成jar就出问题了。原因是没有将native库打包进去，使得执行jar的时候无法加载到这些库。所以这篇文章就分享一下这次打包native库的经验。</p>
+<a id="more"></a>
+<h2 id="Z3二进制"><a href="#Z3二进制" class="headerlink" title="Z3二进制"></a>Z3二进制</h2><p>首先看一下Z3发布的预编译版本，Z3一共发布了windows、ubuntu、macos三种平台的预编译文件，其中windows同时支持32位和64位架构。我们以ubuntu的发布版为例：</p>
+<img src="/2020/04/21/techniques/native-package/z3-ubuntu.png" class="">
+<p><code>include</code>文件夹是编译c/c++时用的头文件；<code>bin</code>目录下的文件比较杂，可以看出Z3的跨语言支持。其中核心的约束求解这部分是用c++写的，被编译成<code>libz3.so</code>。在ubuntu平台上直接运行无后缀的<code>z3</code> ELF文件，会动态连接libz3。用python写Z3的话，则是利用标准库<a href="https://docs.python.org/3/library/ctypes.html" target="_blank" rel="noopener">ctypes</a>实现<code>libz3.so</code>的接口。我关注的是java的接口，涉及到两个文件<code>com.microsoft.z3.jar</code>和<code>libz3java.so</code>。一般来说，java的二进制接口是通过native函数实现的，以jar中的一个方法为例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.microsoft.z3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Native</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">INTERNALmkTrue</span><span class="params">(<span class="keyword">long</span> obj)</span></span>;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种用<code>native</code>修饰的方法，在对应的C代码里应该有类似的函数名（去看下源码发现这些函数是用python在编译时生成的，震撼）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT jlong JNICALL</span><br><span class="line">Java_com_microsoft_z3_Native_INTERNALmkTrue(JNIEnv *env, jclass cls, jlong obj)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法会引用libz3，执行约束求解等功能。为了使用这个native方法，需要先用<code>System.loadLibrary(String)</code>方法去加载java的native库，就是文件中的<code>libz3java.so</code>。这个加载的时机是程序员控制的，不由jvm决定，因此我们能在Z3的代码里看到这样的过程（也是用python生成的）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"z3java"</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (UnsatisfiedLinkError e) &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"libz3java"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是上面那个<code>Native</code>类的静态代码块，会在类被加载时调用。用了两次加载的原因是不同平台上对native库的命名要求不同。这样来看，我们工具使用Z3的流程就很清晰了：</p>
+<ol>
+<li>在工具中直接调用Z3的java-api，这些api定义在<code>com.microsoft.z3.jar</code>里面</li>
+<li>java-api在引用<code>Native</code>类时触发native库的加载，从而加载<code>libz3java.so</code>库</li>
+<li>libz3java里面的函数会引用libz3中的核心函数</li>
+</ol>
+<p>于是，为了在ubuntu上使用Z3，我们需要一个jar和两个so。在其他平台上也是如此，只不过so换成了其他的后缀名。</p>
+<h2 id="打包流程"><a href="#打包流程" class="headerlink" title="打包流程"></a>打包流程</h2><h3 id="jar的打包"><a href="#jar的打包" class="headerlink" title="jar的打包"></a>jar的打包</h3><p>“jar的打包”包括两层意思，其一是我们工具的jar，另一层是Z3的jar。我们的工具是用Maven构建的，依赖项会声明在<code>pom.xml</code>文件中。这带来的第一个问题是：Z3没有把jar发布到中心仓库上，我们没办法直接拉取。这里我们用<strong>本地仓库</strong>来解决。</p>
+<p>首先在项目根目录创建一个<code>local-libs</code>文件夹，并且在pom中声明该本地仓库：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>local-deps<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Local<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>file://$&#123;basedir&#125;/local-libs/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后用mvn把Z3-jar安装到该仓库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mvn install:install-file -Dfile=com.microsoft.z3.jar \</span><br><span class="line">                         -DgroupId=com.microsoft \</span><br><span class="line">                         -DartifactId=z3 \</span><br><span class="line">                         -Dversion=4.8.7 \</span><br><span class="line">                         -Dpackaging=jar \</span><br><span class="line">                         -DlocalRepositoryPath=<span class="built_in">local</span>-libs</span><br></pre></td></tr></table></figure>
+<h3 id="so的打包"><a href="#so的打包" class="headerlink" title="so的打包"></a>so的打包</h3><p>相比jar来说，so简单一些，直接放进<code>src/main/resources</code>目录就好。这是maven的一个默认路径，maven在打包时会把该路径下的文件都打包进jar里（<a href="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html" target="_blank" rel="noopener">链接</a>）。这种默认机制很常见，例如用gradle打包apk的时候，会把<code>src/main/jniLibs</code>中的so库放到apk的<code>lib</code>目录下。同时，这个目录按照cpu架构细分子目录（<code>armeabi-v7a</code>、<code>arm64-v8a</code>等），并在每个子目录下存放对应架构的二进制库。</p>
+<p>用这种方法打包jar的问题在于，我们没办法很方便地在运行时去加载native库。安卓系统自带的加载器（loader）能够判断当前的cpu架构，从而去对应的目录下找需加载的库。而对于一般的虚拟机来说，只会去找默认的加载目录。这也是为什么一些Z3的教程会让人在使用时先<code>PATH</code>或<code>LD_LIBRARY_PATH</code>修改环境变量，或者是把native库放到<code>JAVA_HOME/bin</code>里面。这对于以可移植为目标的工具来说显然是不行的。</p>
+<p>到目前为止，我们的主要矛盾是，java的运行的过程中找不到Z3的native库，尽管这些库被我们打包进jar里面了。解决的方法也简单，就两条：</p>
+<ol>
+<li>运行时把jar包中的native库取出来，放到某个路径下</li>
+<li>修改classpath，使得native库能够被找到</li>
+</ol>
+<p>下面分两节讨论。</p>
+<h4 id="提取native库"><a href="#提取native库" class="headerlink" title="提取native库"></a>提取native库</h4><p>我们用类似的APK打包的手段，把Z3的三种二进制库都放进项目路径中，因此会有类似下面的目录结构：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- src/</span><br><span class="line">  - main/</span><br><span class="line">    - resources/</span><br><span class="line">      - <span class="class"><span class="keyword">lib</span>/</span></span><br><span class="line">        - linux_64/</span><br><span class="line">          - libz3.so</span><br><span class="line">          - libz3java.so</span><br><span class="line">        + osx_64/</span><br><span class="line">        + windows_64/</span><br></pre></td></tr></table></figure>
+<p>然后可以用<code>ClassLoader.getResourcesAsStream(&quot;lib/linux_64/libz3.so&quot;)</code>来获得对应的文件流。这里有一个坑是，用<code>ClassLoader.getResource</code>能拿到文件路径，也可以得到对应的文件流。但这种方法只能用IDE调试，对于压缩过的jar是行不通的。而前者可以在两种运行环境中都正常使用。</p>
+<p>复制文件本身不困难，直接往临时文件夹下复制就行。为了避免每次运行都复制一遍native库，可以把复制的路径设为临时文件夹下的一个固定的目录。</p>
+<p>仿照apk的方式，我们把文件夹按架构细分。至于运行时怎么确定架构，则是直接用了<a href="https://github.com/scijava/native-lib-loader/blob/master/src/main/java/org/scijava/nativelib/NativeLibraryUtil.java" target="_blank" rel="noopener">开源的代码</a>。</p>
+<h4 id="修改加载路径"><a href="#修改加载路径" class="headerlink" title="修改加载路径"></a>修改加载路径</h4><p>我们可以用<code>System.load</code>直接从某个路径加载一个native库，但这样Z3自己的代码里面的<code>System.loadLibrary</code>就会报错。因此最好的方法就是，我们修改加载路径，这样在Z3自己的代码里面就能正常地找到对应的库了。</p>
+<p>加载路径对应的是<code>java.library.path</code>属性，但这个属性不能在运行时重设，因此要使用<strong>反射</strong>，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");</span><br><span class="line">    usrPathsField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    String[] paths = (String[]) usrPathsField.get(<span class="keyword">null</span>);</span><br><span class="line">    String[] newPaths = Arrays.copyOf(paths, paths.length+<span class="number">1</span>);</span><br><span class="line">    newPaths[newPaths.length-<span class="number">1</span>] = libPath.toString();</span><br><span class="line">    usrPathsField.set(<span class="keyword">null</span>, newPaths);</span><br><span class="line">&#125; <span class="keyword">catch</span> (NoSuchFieldException | IllegalAccessException ignored) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一步之后还有一个小坑，前面说到libz3java依赖于libz3，但在Z3的代码中，只显式地加载了前者，而后者会被jvm动态加载。但是我修改路径之后发现加载器还是找不到libz3（原因未明），所以只能自己在工具代码里面手动去加载它。</p>
+<p>到这里为止，我们的工具就可以在不同的机器上正常地使用Z3了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jar-packaging/" rel="tag"># jar packaging</a>
+              <a href="/tags/native-libraries/" rel="tag"># native libraries</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/10/study/android-permission/" rel="prev" title="关于Android的minSdkVersion、targetSdkVersion和compileSdkVersion">
+      <i class="fa fa-chevron-left"></i> 关于Android的minSdkVersion、targetSdkVersion和compileSdkVersion
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Z3二进制"><span class="nav-number">2.</span> <span class="nav-text">Z3二进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包流程"><span class="nav-number">3.</span> <span class="nav-text">打包流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jar的打包"><span class="nav-number">3.1.</span> <span class="nav-text">jar的打包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#so的打包"><span class="nav-number">3.2.</span> <span class="nav-text">so的打包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#提取native库"><span class="nav-number">3.2.1.</span> <span class="nav-text">提取native库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改加载路径"><span class="nav-number">3.2.2.</span> <span class="nav-text">修改加载路径</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cirq"
+      src="/assets/blogimg/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cirq</p>
+  <div class="site-description" itemprop="description">technical/leisure blog, personal website</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/CirQ" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;CirQ" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:cirq999@163.com" title="E-Mail → mailto:cirq999@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.henryhc.net/" title="https:&#x2F;&#x2F;blog.henryhc.net&#x2F;" rel="noopener" target="_blank">Henry Chu</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cirq</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
